@@ -38,6 +38,7 @@
 		<maven.compiler.plugin.version>3.3</maven.compiler.plugin.version>
 		<maven.surefire.plugin.version>2.19</maven.surefire.plugin.version>
 		<maven.war.plugin.version>2.6</maven.war.plugin.version>
+		<org.powermock.version>1.6.4</org.powermock.version>
 	</properties>
 	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 	<dependencies>
@@ -59,6 +60,18 @@
             <version>4.12</version>
             <scope>test</scope>
         </dependency>
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-api-mockito</artifactId>
+			<version>${org.powermock.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-module-testng</artifactId>
+			<version>${org.powermock.version}</version>
+			<scope>test</scope>
+		</dependency>
 		<!-- - - - Logger - - - -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -396,6 +409,7 @@
                     <executions>
                         <execution>
                             <id>pre-unit-test</id>
+                            <phase>test</phase>
                             <goals>
                                 <goal>prepare-agent</goal>
                             </goals>
@@ -460,8 +474,10 @@
                     <version>1.0.9</version>
                     <executions>
                         <execution>
+                        		<phase>generate-sources</phase>
                             <goals>
                                 <goal>process</goal>
+                                <goal>test-process</goal>
                             </goals>
                             <configuration>
                                 <outputDirectory>target/generated-sources/java</outputDirectory>

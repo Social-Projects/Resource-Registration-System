@@ -37,28 +37,30 @@ public class ResourceTypeServiceImplTest extends AbstractTestNGSpringContextTest
 	@Autowired
 	private Logger logger;
 	@Autowired
-	private ResourceRepository resRep;
+	private ResourceRepository resourceRepository;
 	@Autowired
-	private ResourceTypeRepository resTypeRep;
+	private ResourceTypeRepository resourceTypeRepository;
 	@Autowired
-	private ResourceTypeService resTypeServ;
+	private ResourceTypeService resourceTypeService;
 	@Autowired
 	private LinearParameterRepository linearParameterRepository;
 	@Autowired
 	private DiscreteParameterRepository discreteParameterRepository;
 	@Autowired
-	private UserRepository userRep;
+	private UserRepository userRepository;
 	@Autowired
-	private TomeRepository tomeRep;
+	private TomeRepository tomeRepository;
 
-	private int desiredResources = 10, resTypeIdent = 0;
+	private static final int DESIRED_RESOURCES = 10;
+	private int resTypeIdent = 0;
 	private List<ResourceType> cResTypeList = new ArrayList<ResourceType>();
 	private List<ResourceTypeDTO> cResTypeDTOList = new ArrayList<ResourceTypeDTO>();
 
 	// DataProvider
 	@DataProvider(name = "DataForResourceTypes")
 	public Object[][] formDataForResourceTypes() {
-		Object[][] tmp = new Object[desiredResources][];
+		logger.debug("Generating basic input data");
+		Object[][] tmp = new Object[DESIRED_RESOURCES][];
 		String resIdentMask = "resourceType#%03d";
 
 		for (int i = 0; i < tmp.length; i++) {
@@ -92,6 +94,7 @@ public class ResourceTypeServiceImplTest extends AbstractTestNGSpringContextTest
 
 	@DataProvider(name = "DataForSearchOps")
 	public Object[][] formDataForSearch() {
+		logger.debug("Generating data for findBy type operations");
 		Object[][] tmp = new Object[cResTypeList.size()][1];
 		for (int i = 0; i < tmp.length; i++) {
 			tmp[i] = new Object[] { cResTypeList.get(i) };
@@ -101,6 +104,7 @@ public class ResourceTypeServiceImplTest extends AbstractTestNGSpringContextTest
 
 	@DataProvider(name = "DataForDTOEdit")
 	public Object[][] formDataForDTOEditOp() {
+		logger.debug("Generating data for DTO edit operations");
 		Object[][] tmp = new Object[cResTypeDTOList.size()][1];
 		for (int i = 0; i < tmp.length; i++) {
 			tmp[i] = new Object[] { cResTypeDTOList.get(i) };
@@ -110,6 +114,7 @@ public class ResourceTypeServiceImplTest extends AbstractTestNGSpringContextTest
 
 	@DataProvider(name = "PrepareDataForDeletion")
 	public Object[][] prepareDataForDeletion() {
+		logger.debug("Generating data for delete operations");
 		Object[][] tmp = new Object[cResTypeList.size()][];
 
 		Date date = new Date();
@@ -121,11 +126,11 @@ public class ResourceTypeServiceImplTest extends AbstractTestNGSpringContextTest
 			res.setIdentifier(resType.getTypeName() + ".resource#" + i);
 			res.setReasonInclusion("reason");
 			res.setType(resType);
-			res.setRegistrator(userRep.findUserByLogin("registrator"));
+			res.setRegistrator(userRepository.findUserByLogin("registrator"));
 			res.setStatus(ResourceStatus.ACTIVE);
-			res.setTome(tomeRep.findOne(1));
+			res.setTome(tomeRepository.findOne(1));
 
-			resRep.save(res);
+			resourceRepository.save(res);
 			
 			tmp[i] = new Object[]{resType};
 		}
@@ -137,22 +142,25 @@ public class ResourceTypeServiceImplTest extends AbstractTestNGSpringContextTest
 
 	@Test(dataProvider = "DataForResourceTypes", priority=1)
 	public void addResourceType(ResourceType expected) {
-		long size = resTypeRep.count();
+		logger.debug("Start");
+		long size = resourceTypeRepository.count();
 
-		ResourceType actual = resTypeServ.addResourceType(expected);
-		actual = resTypeRep.findByName(actual.getTypeName());
+		ResourceType actual = resourceTypeService.addResourceType(expected);
+		actual = resourceTypeRepository.findByName(actual.getTypeName());
 
 		AssertJUnit.assertNotNull(actual);
 
 		AssertJUnit.assertEquals(expected.getTypeName(), actual.getTypeName());
 		AssertJUnit.assertEquals(expected.getTypeId(), actual.getTypeId());
-		AssertJUnit.assertEquals((size + 1), resTypeRep.count());
+		AssertJUnit.assertEquals((size + 1), resourceTypeRepository.count());
 
 		cResTypeList.add(actual);
+		logger.debug("End");
 	}
 
 	@Test(dataProvider = "DataForResourceTypes", priority=2)
 	public void addResourceTypeDTO(ResourceType res) {
+		logger.debug("Start");
 		ResourceTypeDTO expected = new ResourceTypeDTO();
 		expected.setTypeName(res.getTypeName());
 
@@ -176,9 +184,9 @@ public class ResourceTypeServiceImplTest extends AbstractTestNGSpringContextTest
 		}
 		expected.setParameters(typeParList);
 
-		ResourceTypeDTO actual = resTypeServ.addResourceTypeDTO(expected);
+		ResourceTypeDTO actual = resourceTypeService.addResourceTypeDTO(expected);
 
-		ResourceType fromActual = resTypeRep.findByName(actual.getTypeName());
+		ResourceType fromActual = resourceTypeRepository.findByName(actual.getTypeName());
 		AssertJUnit.assertNotNull(fromActual);
 
 		AssertJUnit.assertEquals(actual.getTypeName(), expected.getTypeName());
@@ -196,36 +204,44 @@ public class ResourceTypeServiceImplTest extends AbstractTestNGSpringContextTest
 
 		cResTypeList.add(fromActual);
 		cResTypeDTOList.add(actual);
+		logger.debug("End");
 	}
 
 	@Test(dataProvider = "DataForSearchOps", priority=3)
 	public void findById(ResourceType expected) {
-		ResourceType actual = resTypeServ.findById(expected.getTypeId());
+		logger.debug("Start");
+		ResourceType actual = resourceTypeService.findById(expected.getTypeId());
 
 		Assert.assertNotNull(actual);
 		Assert.assertEquals(expected.getTypeName(), actual.getTypeName());
 		Assert.assertEquals(expected.getTypeId(), actual.getTypeId());
+		logger.debug("End");
 	}
 
 	@Test(dataProvider = "DataForSearchOps", priority=4)
 	public void findByName(ResourceType expected) {
-		ResourceType actual = resTypeServ.findByName(expected.getTypeName());
+		logger.debug("Start");
+		ResourceType actual = resourceTypeService.findByName(expected.getTypeName());
 
 		Assert.assertNotNull(actual);
 		Assert.assertEquals(expected.getTypeName(), actual.getTypeName());
 		Assert.assertEquals(expected.getTypeId(), actual.getTypeId());
+		logger.debug("End");
 	}
 
 	@Test(priority=5)
 	public void findAll() {
-		List<ResourceType> resTypeList = resTypeServ.findAll();
+		logger.debug("Start");
+		List<ResourceType> resTypeList = resourceTypeService.findAll();
 		Assert.assertEquals(resTypeList.size(), cResTypeList.size() + 1);
+		logger.debug("End");
 	}
 
 	@Test(dataProvider = "DataForDTOEdit", priority=6)
 	public void editResourceType(ResourceTypeDTO expected) {
-		ResourceTypeDTO forActual = resTypeServ.editResourceType(expected);
-		ResourceType actual = resTypeRep.findByName(forActual.getTypeName());
+		logger.debug("Start");
+		ResourceTypeDTO forActual = resourceTypeService.editResourceType(expected);
+		ResourceType actual = resourceTypeRepository.findByName(forActual.getTypeName());
 		Assert.assertNotNull(actual);
 
 		Assert.assertEquals(actual.getTypeName(), expected.getTypeName());
@@ -260,19 +276,22 @@ public class ResourceTypeServiceImplTest extends AbstractTestNGSpringContextTest
 			Assert.assertEquals(act.getParametersType(), exp.getParametersType());
 			Assert.assertEquals(act.getDescription(), exp.getDescription());
 		}
+		logger.debug("End");
 	}
 
 	@Test(dataProvider="PrepareDataForDeletion", priority=7)
 	public void delete(ResourceType res) {
-		logger.info("Size of ResourceTypeRep before: "+resTypeRep.count());
+		logger.debug("Start");
+		logger.info("Size of ResourceTypeRep before: "+resourceTypeRepository.count());
 		
-		boolean actual = resTypeServ.delete(res);
+		boolean actual = resourceTypeService.delete(res);
 		Assert.assertEquals(actual, false);
-		Resource resource = resRep.findByType(res).get(0);
-		resRep.delete(resource);
-		actual = resTypeServ.delete(res);
+		Resource resource = resourceRepository.findByType(res).get(0);
+		resourceRepository.delete(resource);
+		actual = resourceTypeService.delete(res);
 		Assert.assertEquals(actual, true);
 		
-		logger.info("Size of ResourceTypeRep after: "+resTypeRep.count());
+		logger.info("Size of ResourceTypeRep after: "+resourceTypeRepository.count());
+		logger.debug("End");
 	}
 }

@@ -38,48 +38,48 @@ public class InquiryServiceImplTest extends AbstractTestNGSpringContextTests {
 	@Autowired
 	private Logger logger;
 	@Autowired
-	private InquiryRepository inqRep;
+	private InquiryRepository inquiryRepository;
 	@Autowired
-	private UserRepository userRep;
+	private UserRepository userRepository;
 	@Autowired
-	private ResourceRepository resRep;
+	private ResourceRepository resourceRepository;
 	@Autowired
 	private InquiryService inquiryService;
 	@Autowired
-	private ResourceTypeRepository resTypeRep;
+	private ResourceTypeRepository resourceTypeRepository;
 	@Autowired
-	private TomeRepository tomeRep;
+	private TomeRepository tomeRepository;
 
 	List<Inquiry> cInquiryList = new ArrayList<Inquiry>();
 	List<Resource> cResourceList = new ArrayList<Resource>();
 
 	private Date date = new Date();
 
-	int desiredResources = 10, resourceNum = 0;
+	private static final int DESIRED_RESOURCES = 10;
+	private int resourceNum = 0;
 
 	// DataProviders
 
 	@DataProvider(name = "ProviderForInquiries")
 	public Object[][] formDataForInquiries() {
-		Object[][] tmp = new Object[desiredResources][3];
+		logger.debug("Generating basic input data");
+		Object[][] tmp = new Object[DESIRED_RESOURCES][3];
 
-		logger.info("DataProviders: Running the \"ProviderForInquiries\" DataProvider");
-
-		User owner = userRep.findUserByLogin("user"), registrator = userRep.findUserByLogin("registrator");
+		User owner = userRepository.findUserByLogin("user"), registrator = userRepository.findUserByLogin("registrator");
 
 		String resIdent = "land#%03d", resDef = "This is land";
 
-		for (int i = 0; i < desiredResources; i++) {
+		for (int i = 0; i < DESIRED_RESOURCES; i++) {
 			Resource res = new Resource();
-			res.setType(resTypeRep.findOne(1));
+			res.setType(resourceTypeRepository.findOne(1));
 			res.setIdentifier(String.format(resIdent, resourceNum++));
 			res.setDescription(resDef);
 			res.setDate(date);
 			res.setRegistrator(registrator);
 			res.setStatus(ResourceStatus.ACTIVE);
-			res.setTome(tomeRep.findTomeByRegistrator(registrator));
+			res.setTome(tomeRepository.findTomeByRegistrator(registrator));
 			res.setReasonInclusion("reason");
-			resRep.save(res);
+			resourceRepository.save(res);
 
 			cResourceList.add(res);
 
@@ -91,7 +91,8 @@ public class InquiryServiceImplTest extends AbstractTestNGSpringContextTests {
 
 	@DataProvider(name = "DataForListInquiryMethod")
 	public Object[][] formDataForListInquiryMethod() {
-		List<User> userList = userRep.findAll();
+		logger.debug("Generating input and output inquiry data");
+		List<User> userList = userRepository.findAll();
 		InquiryType[] inqType = InquiryType.values();
 
 		Object[][] tmp = new Object[userList.size() * inqType.length][];
@@ -107,7 +108,8 @@ public class InquiryServiceImplTest extends AbstractTestNGSpringContextTests {
 
 	@DataProvider(name = "DataForUserListUsersByTC")
 	public Object[][] formDataForUserlistByTC() {
-		List<User> userList = userRep.findAll();
+		logger.debug("Generating user list");
+		List<User> userList = userRepository.findAll();
 
 		Object[][] tmp = new Object[userList.size()][];
 		int pos = 0;
@@ -121,14 +123,15 @@ public class InquiryServiceImplTest extends AbstractTestNGSpringContextTests {
 
 	@Test(dataProvider = "ProviderForInquiries", priority=1)
 	public void addInputInquiry(Resource res, User registrator, User owner) {
-		long sizeBefore = inqRep.count();
+		logger.debug("Start");
+		long sizeBefore = inquiryRepository.count();
 		InquiryType type = InquiryType.INPUT;
 
 		inquiryService.addInputInquiry(owner.getLogin(), res, registrator);
-		Assert.assertEquals(sizeBefore + 1, inqRep.count());
+		Assert.assertEquals(sizeBefore + 1, inquiryRepository.count());
 
 		Inquiry actual = null;
-		List<Inquiry> inqList = inqRep.findByRegistratorAndInquiryType(registrator, type);
+		List<Inquiry> inqList = inquiryRepository.findByRegistratorAndInquiryType(registrator, type);
 		for (Inquiry iq : inqList) {
 			if (iq.getResource().equals(res)) {
 				if (actual == null) {
@@ -139,11 +142,13 @@ public class InquiryServiceImplTest extends AbstractTestNGSpringContextTests {
 			}
 		}
 		Assert.assertNotNull(actual);
-	cInquiryList.add(actual);
+		cInquiryList.add(actual);
+		logger.debug("End");
 	}
 
 	@Test(dataProvider = "ProviderForInquiries", priority=2)
 	public void addOutputInquiry(Resource res, User registrator, User owner) {
+		logger.debug("Start");
 		InquiryType type = InquiryType.OUTPUT;
 
 		Inquiry expected = new Inquiry(type.toString(), date, owner, registrator, res),
@@ -154,20 +159,22 @@ public class InquiryServiceImplTest extends AbstractTestNGSpringContextTests {
 		Assert.assertEquals(actual.getInquiryType(), expected.getInquiryType());
 
 		cInquiryList.add(actual);
+		logger.debug("End");
 	}
 
 	//
 	@Test(dataProvider = "DataForListInquiryMethod", priority=3)
 	public void listInquiryUser(User user, InquiryType it) {
+		logger.debug("Start");
 		List<InquiryListDTO> expected = new ArrayList<InquiryListDTO>();
-		user = userRep.findUserByLogin(user.getLogin());
+		user = userRepository.findUserByLogin(user.getLogin());
 		InquiryListDTO inquiryListDTO;
 
 		List<Inquiry> inquiries;
 		if (user.getRole().getType().equals(RoleType.USER)) {
-			inquiries = inqRep.findByUserAndInquiryType(user, it);
+			inquiries = inquiryRepository.findByUserAndInquiryType(user, it);
 		} else {
-			inquiries = inqRep.findByRegistratorAndInquiryType(user, it);
+			inquiries = inquiryRepository.findByRegistratorAndInquiryType(user, it);
 		}
 
 		for (Inquiry inq : inquiries) {
@@ -194,13 +201,15 @@ public class InquiryServiceImplTest extends AbstractTestNGSpringContextTests {
 			Assert.assertEquals(comp0.getRegistratorName(), comp1.getRegistratorName());
 			Assert.assertEquals(comp0.getResourceStatus(), comp1.getResourceStatus());
 		}
+		logger.debug("End");
 	}
 
 	@Test(dataProvider = "DataForUserListUsersByTC", priority=4)
 	public void listUserNameDTO(User user) {
-		User usr = userRep.findUserByLogin(user.getLogin());
+		logger.debug("Start");
+		User usr = userRepository.findUserByLogin(user.getLogin());
 		TerritorialCommunity tc = usr.getTerritorialCommunity();
-		List<User> registrators = userRep.getUsersByRoleAndCommunity(RoleType.REGISTRATOR, tc);
+		List<User> registrators = userRepository.getUsersByRoleAndCommunity(RoleType.REGISTRATOR, tc);
 
 		logger.info("Testing the formation of the UserNameDTO, builded using User obj: " + user.getLogin());
 
@@ -216,24 +225,29 @@ public class InquiryServiceImplTest extends AbstractTestNGSpringContextTests {
 		Assert.assertEquals(expected.size(), actual.size());
 		actual.removeAll(expected);
 		Assert.assertEquals(actual.size(), 0);
+		logger.debug("End");
 	}
 
 	@Test(priority=5)
 	public void removeInquiry() {
-		long sizeBefore = inqRep.count();
+		logger.debug("Start");
+		long sizeBefore = inquiryRepository.count();
 		for (Inquiry inq : cInquiryList) {
 			inquiryService.removeInquiry(inq.getInquiryId());
 		}
 		long expectedSize = sizeBefore - cInquiryList.size();
-		Assert.assertEquals(inqRep.count(), expectedSize);
+		Assert.assertEquals(inquiryRepository.count(), expectedSize);
+		logger.debug("End");
 	}
 
 	@AfterClass
 	public void cleanUp() {
-		logger.info("Cleaning up the repositories. Before: " + resRep.count());
+		logger.debug("Start");
+		logger.info("Cleaning up the repositories. Before: " + resourceRepository.count());
 		for (Resource res : cResourceList) {
-			resRep.delete(res);
+			resourceRepository.delete(res);
 		}
-		logger.info("After: " + resRep.count());
+		logger.info("After: " + resourceRepository.count());
+		logger.debug("End");
 	}
 }

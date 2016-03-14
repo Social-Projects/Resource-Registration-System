@@ -11,6 +11,8 @@ import org.registrator.community.dao.VerificationTokenRepository;
 import org.registrator.community.entity.VerificationToken;
 import org.registrator.community.enumeration.TokenType;
 import org.registrator.community.service.VerificationTokenService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -23,18 +25,20 @@ import org.testng.annotations.Test;
 @ContextConfiguration(classes = { TestingConfiguration.class, LoggingConfig.class, SpringRootConfig.class })
 public class VerificationTokenServiceImplTest extends AbstractTestNGSpringContextTests {
 	@Autowired
-	private VerificationTokenRepository verRep;
+	private VerificationTokenRepository verificationTokenRepository;
 	@Autowired
-	private VerificationTokenService verServ;
-
+	private VerificationTokenService verificationTokenService;
+	
+	private Logger logger = LoggerFactory.getLogger(VerificationTokenService.class);
 	private Date date = new Date();
 	private List<VerificationToken> cTokenList = new ArrayList<VerificationToken>();
-	private int desiredResources = 10;
+	private static final int DESIRED_RESOURCES = 10;
 
 	// DataProviders
 	@DataProvider(name = "ProviderForTokenFormation")
 	public Object[][] formEmailStrings() {
-		Object[][] tmp = new Object[desiredResources][1];
+		logger.debug("Generating email strings");
+		Object[][] tmp = new Object[DESIRED_RESOURCES][1];
 		String emailMask = "tokenEmail#%03d@gmail.com";
 
 		for (int i = 0; i < tmp.length; i++) {
@@ -45,22 +49,23 @@ public class VerificationTokenServiceImplTest extends AbstractTestNGSpringContex
 
 	@DataProvider(name = "ProviderForSearchTypeOperations")
 	public Object[][] formSearchData() {
+		logger.debug("Generating data for findBy type operations");
 		Object[][] tmp = new Object[cTokenList.size()][2];
 
 		Date expired = new Date(0);
 		boolean isExpired = false;
 		for (int i = 0; i < tmp.length; i++) {
 			VerificationToken tokInList = cTokenList.get(i),
-					tok = verRep.findVerificationTokenByToken(tokInList.getToken());
+					tok = verificationTokenRepository.findVerificationTokenByToken(tokInList.getToken());
 			isExpired = false;
 			if (i % 2 == 0) {
-				verRep.delete(tok);
+				verificationTokenRepository.delete(tok);
 
 				tok.setExpiryDate(expired);
 				tokInList.setExpiryDate(expired);
 
 				isExpired = true;
-				tok = verRep.save(tok);
+				tok = verificationTokenRepository.save(tok);
 			}
 			tmp[i] = new Object[] { tok, isExpired };
 		}
@@ -71,64 +76,74 @@ public class VerificationTokenServiceImplTest extends AbstractTestNGSpringContex
 
 	@Test(priority=1)
 	public void createHashForPasswordToken() {
-		for (int i = 0; i < desiredResources; i++) {
-			String generated = verServ.createHashForPasswordToken();
+		logger.debug("Start");
+		for (int i = 0; i < DESIRED_RESOURCES; i++) {
+			String generated = verificationTokenService.createHashForPasswordToken();
 			Assert.assertNotNull(generated);
 		}
+		logger.debug("End");
 	}
 
 	@Test(dataProvider = "ProviderForTokenFormation", priority=2)
 	public void savePasswordVerificationToken(String email) {
-		VerificationToken actual = verServ.savePasswordVerificationToken(email, date),
+		logger.debug("Start");
+		VerificationToken actual = verificationTokenService.savePasswordVerificationToken(email, date),
 				expected = new VerificationToken(actual.getToken(), email, actual.getExpiryDate(),
 						TokenType.RECOVER_PASSWORD);
 
 		Assert.assertEquals(expected.getUserEmail(), actual.getUserEmail());
 		Assert.assertEquals(expected.getExpiryDate(), actual.getExpiryDate());
 
-		VerificationToken extraCheck = verRep.findTokenByEmail(actual.getUserEmail());
+		VerificationToken extraCheck = verificationTokenRepository.findTokenByEmail(actual.getUserEmail());
 		Assert.assertNotNull(extraCheck);
 
 		cTokenList.add(actual);
+		logger.debug("End");
 	}
 
 	@Test(dataProvider = "ProviderForSearchTypeOperations", priority=3)
 	public void isExistValidVerificationToken(VerificationToken tok, boolean isExpired) {
+		logger.debug("Start");
 		boolean manualCheck = tok.getExpiryDate().getTime() > System.currentTimeMillis(),
-				formedCheck = verServ.isExistValidVerificationToken(tok.getToken());
+				formedCheck = verificationTokenService.isExistValidVerificationToken(tok.getToken());
 		Assert.assertEquals(formedCheck, !isExpired);
 		Assert.assertEquals(manualCheck, formedCheck);
+		logger.debug("End");
 	}
 
 	@Test(dataProvider = "ProviderForSearchTypeOperations", priority=4)
 	public void findVerificationTokenByTokenAndTokenType(VerificationToken expected, boolean isExpired) {
-		VerificationToken actual = verServ.findVerificationTokenByTokenAndTokenType(expected.getToken(),
+		logger.debug("Start");
+		VerificationToken actual = verificationTokenService.findVerificationTokenByTokenAndTokenType(expected.getToken(),
 				expected.getTokenType());
 
 		Assert.assertEquals(actual.getToken(), expected.getToken());
 		Assert.assertEquals(actual.getUserEmail(), expected.getUserEmail());
 		Assert.assertEquals(actual.getExpiryDate().getTime(), expected.getExpiryDate().getTime());
 		Assert.assertEquals(actual.getId(), expected.getId());
+		logger.debug("End");
 	}
 
 	@Test(priority=5)
 	public void deletePasswordVerificationTokenByEmailAndByTokenName() {
+		logger.debug("Start");
 		int listSize = cTokenList.size();
-		long repSize = verRep.count();
+		long repSize = verificationTokenRepository.count();
 		
 		logger.info("Size before cleanUp: "+repSize);
 		for(int i = 0; i< listSize; i++){
-			VerificationToken tok = verRep.findVerificationTokenByToken(cTokenList.get(i).getToken());
+			VerificationToken tok = verificationTokenRepository.findVerificationTokenByToken(cTokenList.get(i).getToken());
 			if(i%2==0){
-				verServ.deletePasswordVerificationTokenByEmail(tok.getUserEmail());
+				verificationTokenService.deletePasswordVerificationTokenByEmail(tok.getUserEmail());
 			}else{
-				verServ.deleteVerificationToken(tok);
+				verificationTokenService.deleteVerificationToken(tok);
 			}
-			tok = verRep.findVerificationTokenByToken(cTokenList.get(i).getToken());
+			tok = verificationTokenRepository.findVerificationTokenByToken(cTokenList.get(i).getToken());
 			Assert.assertNull(tok);
 		}
-		Assert.assertEquals(verRep.count(), repSize-listSize);
-		logger.info("Size after cleanUp: "+verRep.count());
+		Assert.assertEquals(verificationTokenRepository.count(), repSize-listSize);
+		logger.info("Size after cleanUp: "+verificationTokenRepository.count());
 		cTokenList.clear();
+		logger.debug("End");
 	}
 }
