@@ -11,11 +11,13 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.powermock.api.support.membermodification.MemberModifier;
 import org.registrator.community.entity.User;
 import org.registrator.community.enumeration.RoleType;
 import org.registrator.community.service.UserService;
 import org.registrator.community.service.impl.LimitLoginAuthenticationProvider;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -36,14 +38,12 @@ public class LimitLoginAuthenticationProviderTest {
 	UserService userService;
 
 	@Mock
-	private Logger logger;
-
-	@Mock
 	private PasswordEncoder userPasswordEncoder;
 
 	@InjectMocks
-	private DaoAuthenticationProvider prov = new LimitLoginAuthenticationProvider();
+	private DaoAuthenticationProvider authenticationProviderService = new LimitLoginAuthenticationProvider();
 
+	private Logger logger = LoggerFactory.getLogger(authenticationProviderService.getClass());
 	private List<User> userList = new ArrayList<User>();
 	private static final int DESIRED_RESOURCES = 10;
 
@@ -99,7 +99,7 @@ public class LimitLoginAuthenticationProviderTest {
 		}
 	}
 
-	private UserDetailsService dserv = new UserDetailsService() {
+	private UserDetailsService userDetailsService = new UserDetailsService() {
 		@Override
 		public UserDetails loadUserByUsername(String username)
 				throws UsernameNotFoundException {
@@ -119,11 +119,20 @@ public class LimitLoginAuthenticationProviderTest {
 	
 	@BeforeClass
 	public void bindMocks() {
+		logger.debug("Performing InjectMock operations");
 		MockitoAnnotations.initMocks(this);
+		
+		try {
+			MemberModifier.field(authenticationProviderService.getClass(), "logger").set(
+					authenticationProviderService, logger);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@BeforeClass
 	public void prepatePasswordEncoder() {
+		logger.debug("Preparing user password encoder emulation");
 		Mockito.when(userPasswordEncoder.encode(Mockito.anyString())).then(
 				new Answer<String>() {
 					public String answer(InvocationOnMock invo) {
@@ -146,6 +155,7 @@ public class LimitLoginAuthenticationProviderTest {
 
 	@BeforeClass
 	public void prepareUserService() {
+		logger.debug("Preparing user service emulation");
 		Mockito.when(userService.findUserByLogin(Mockito.anyString())).then(
 				new Answer<User>() {
 					public User answer(InvocationOnMock invo) {
@@ -166,6 +176,7 @@ public class LimitLoginAuthenticationProviderTest {
 
 	@DataProvider(name = "SprintSecurityAuthenticationGenerator")
 	public Object[][] generateAuthentications() {
+		logger.debug("Generating authentication data");
 		Object[][] tmp = new Object[DESIRED_RESOURCES][];
 		String userMask = "userLogin%03d";
 
@@ -189,6 +200,7 @@ public class LimitLoginAuthenticationProviderTest {
 
 	@DataProvider(name = "GeneratorForExpiredAccounts")
 	public Object[][] expiredGenerator() {
+		logger.debug("Alterind previosly generated data to suite the expired exception throw");
 		Object[][] tmp = new Object[userList.size()][];
 		for (int i = 0; i < tmp.length; i++) {
 			User user = userList.get(i);
@@ -204,6 +216,7 @@ public class LimitLoginAuthenticationProviderTest {
 
 	@DataProvider(name = "GeneratorForBadCredentialAuthentications")
 	public Object[][] badCredentialGenerator() {
+		logger.debug("Alterind previosly generated data to suite the bad credentials exception throw");
 		Object[][] tmp = new Object[userList.size()][];
 		for (int i = 0; i < tmp.length; i++) {
 			User user = userList.get(i);
@@ -217,9 +230,10 @@ public class LimitLoginAuthenticationProviderTest {
 		return tmp;
 	}
 
+
 	@Test(priority = 1)
 	public void testSetUserDetailsService() {
-		prov.setUserDetailsService(dserv);
+		authenticationProviderService.setUserDetailsService(userDetailsService);
 
 		User testUser = new User();
 		testUser.setLogin("loginString");
@@ -229,22 +243,22 @@ public class LimitLoginAuthenticationProviderTest {
 		Authentication auth = new UsernamePasswordAuthenticationToken(
 				testUser.getLogin(), testUser.getPassword());
 
-		prov.authenticate(auth);
+		authenticationProviderService.authenticate(auth);
 		userList.remove(testUser);
 	}
 
 	@Test(dataProvider = "SprintSecurityAuthenticationGenerator", priority = 2)
 	public void testForSuccessfullAuthentication(Authentication auth) {
-		prov.authenticate(auth);
+		authenticationProviderService.authenticate(auth);
 	}
 
 	@Test(dataProvider = "GeneratorForExpiredAccounts", priority = 3, expectedExceptions = LockedException.class)
 	public void testForAccountExpiredException(Authentication auth) {
-		prov.authenticate(auth);
+		authenticationProviderService.authenticate(auth);
 	}
 
 	@Test(dataProvider = "GeneratorForBadCredentialAuthentications", priority = 4, expectedExceptions = BadCredentialsException.class)
 	public void testForBadCredentialsException(Authentication auth) {
-		prov.authenticate(auth);
+		authenticationProviderService.authenticate(auth);
 	}
 }
