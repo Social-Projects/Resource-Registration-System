@@ -73,6 +73,8 @@ public class CommunityServiceImpl implements CommunityService{
     	TerritorialCommunity territorialCommunity = communityRepository.findOne(communityDTO.getTerritorialCommunityId());
     	if(territorialCommunity != null){
     		territorialCommunity.setName(communityDTO.getName());
+    		if(communityDTO.getRegistrationNumber() != null)
+    			territorialCommunity.setRegistrationNumber(communityDTO.getRegistrationNumber());
     		communityRepository.save(territorialCommunity);
     		return true;
     	}

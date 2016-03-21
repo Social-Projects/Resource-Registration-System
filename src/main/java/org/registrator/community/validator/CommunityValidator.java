@@ -35,5 +35,11 @@ public class CommunityValidator implements Validator {
             	 errors.rejectValue("name", "msg.resourcetype.typename.exist");
             }
         }
+        //validate registrationNumber
+        if(territorialCommunity.getRegistrationNumber() != null &&
+        		!territorialCommunity.getRegistrationNumber().isEmpty()){
+        	if(!territorialCommunity.getRegistrationNumber().matches("^[0-9]{3}:[0-9]{2}:[0-9]{2}:[0-9]{3}:[0-9]{5}$"))
+        		errors.rejectValue("registrationNumber", "typeMismatch");
+        }
     }
 }

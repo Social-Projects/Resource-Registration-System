@@ -15,11 +15,22 @@
 	<div class="form-group">
 		<label class="control-label col-sm-2"><spring:message
 				code="label.community.title" />:</label>
-		<div class="col-sm-2">
+		<div class="col-sm-3">
 			<input class="form-control" name="name" value="${name}"
 				placeholder=<spring:message
                     code="label.community.enterName" />
 				required>
+		</div>
+	</div>
+	<form:errors path="registrationNumber" cssClass="error" style="color:red" />
+	<div class="form-group">
+		<label class="control-label col-sm-2"><spring:message
+				code="label.community.titleNumber" />:</label>
+		<div class="col-sm-3">
+			<input class="form-control" name="registrationNumber" value="${registrationNumber}"
+				placeholder=<spring:message
+                    code="label.community.enterNumber" />
+			>
 		</div>
 	</div>
 	<br />

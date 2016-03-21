@@ -114,6 +114,8 @@ public class CommunityController {
 		logger.info(String.format("open page for edit community with id=%d",id));
 		TerritorialCommunity territorialCommunity = communityService.findById(id);
 		CommunityDTO communityDTO = new CommunityDTO(territorialCommunity.getName(), territorialCommunity.getTerritorialCommunityId());
+		if(territorialCommunity.getRegistrationNumber() != null)
+			communityDTO.setRegistrationNumber(territorialCommunity.getRegistrationNumber());
 		model.addAttribute("community", communityDTO);
 		return "editCommunity";
 	}
@@ -131,6 +133,8 @@ public class CommunityController {
 		TerritorialCommunity territorialCommunity = new TerritorialCommunity();
 		territorialCommunity.setName(communityDTO.getName());
 		territorialCommunity.setTerritorialCommunityId(communityDTO.getTerritorialCommunityId());
+		if(communityDTO.getRegistrationNumber() != null)
+			territorialCommunity.setRegistrationNumber(communityDTO.getRegistrationNumber());
 		validator.validate(territorialCommunity, result);
 		if (result.hasErrors()) {
 			logger.info("bad input: Territorial Community with the same unique field exist");
