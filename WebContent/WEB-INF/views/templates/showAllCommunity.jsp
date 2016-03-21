@@ -18,7 +18,8 @@
 
 	<thead>
 		<tr>
-			<th style="width: 80%;"><spring:message code="label.community.name" /></th>
+			<th style="width: 40%;"><spring:message code="label.community.name" /></th>
+			<th style="width: 40%;"><spring:message code="label.community.titleNumber" /></th>
 			<th style="text-align: center;"><spring:message code="label.restype.actions" /></th>
 		</tr>
 	</thead>
@@ -28,6 +29,7 @@
 			<c:forEach items="${listOfTerritorialCommunity}" var="commun">
 				<tr>
 					<td>${commun.name}</td>
+					<td>${commun.registrationNumber}</td>
 					<td style="text-align: center; width:100%;">
 						<div style="display:inline-block;margin: 2px auto;width:45%;min-width:94px;"> 
 							<a href="editCommunity?id=${commun.territorialCommunityId}" class="btn btn-primary" style="width:100%;"
