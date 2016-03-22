@@ -101,14 +101,18 @@
 								<c:forEach items="${roleList}" var="role">
 									<c:choose>
 										<c:when test="${userDto.role == role.type}">
-											<option selected value="${role.type}">${role.type}</option>
+											<option selected value="${role.type}">
+												<spring:message code="role.${role.type}" />
+											</option>
 										</c:when>
 										<c:otherwise>
-											<option value="${role.type}">${role.type}</option>
+											<option value="${role.type}">
+												<spring:message code="role.${role.type}" />
+											</option>
 										</c:otherwise>
 									</c:choose>
 								</c:forEach>
-							</select></a>
+							</select>
 						</div>
 					</div>
 					<div class="form-group">
@@ -120,10 +124,14 @@
 								<c:forEach items="${userStatusList}" var="userStatus">
 									<c:choose>
 										<c:when test="${userDto.status == userStatus}">
-											<option selected value="${userStatus}">${userStatus}</option>
+											<option selected value="${userStatus}">
+												<spring:message code="status.${userStatus}" />
+											</option>
 										</c:when>
 										<c:otherwise>
-											<option value="${userStatus}">${userStatus}</option>
+											<option value="${userStatus}">
+												<spring:message code="status.${userStatus}" />
+											</option>
 										</c:otherwise>
 									</c:choose>
 								</c:forEach>
