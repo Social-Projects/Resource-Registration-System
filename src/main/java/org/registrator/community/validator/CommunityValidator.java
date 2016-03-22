@@ -26,8 +26,20 @@ public class CommunityValidator implements Validator {
     public void validate(Object target, Errors errors) {
 
         TerritorialCommunity territorialCommunity = (TerritorialCommunity) target;
-        if (communityRepository.findByName(territorialCommunity.getName()) != null) {
-            errors.rejectValue("name", "msg.resourcetype.typename.exist");
+        TerritorialCommunity found = communityRepository.findByName(territorialCommunity.getName());
+        if (found != null) {
+            if(territorialCommunity.getTerritorialCommunityId() != null){
+            	if(territorialCommunity.getTerritorialCommunityId() != found.getTerritorialCommunityId())
+            		errors.rejectValue("name", "msg.resourcetype.typename.exist");
+            }else{
+            	 errors.rejectValue("name", "msg.resourcetype.typename.exist");
+            }
+        }
+        //validate registrationNumber
+        if(territorialCommunity.getRegistrationNumber() != null &&
+        		!territorialCommunity.getRegistrationNumber().isEmpty()){
+        	if(!territorialCommunity.getRegistrationNumber().matches("^[0-9]{3}:[0-9]{2}:[0-9]{2}:[0-9]{3}:[0-9]{5}$"))
+        		errors.rejectValue("registrationNumber", "typeMismatch");
         }
     }
 }

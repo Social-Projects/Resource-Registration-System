@@ -66,9 +66,6 @@ public class UsersController {
 	private TableSettingsFactory tableSettingsFactory;
 
 	@Autowired
-	private CommunityValidator validator;
-
-	@Autowired
 	ResourceNumberJSONDTOValidator resourceNumberValidator;
 
 	/**
@@ -220,74 +217,6 @@ public class UsersController {
 		return "adminSettings";
 	}
 
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	@RequestMapping(value = "/show-all-communities", method = RequestMethod.GET)
-	public String showCommunity(Model model) {
-		List<TerritorialCommunity> listOfTerritorialCommunity = communityService.findAll();
-		model.addAttribute("listOfTerritorialCommunity", listOfTerritorialCommunity);
-		return "showAllCommunity";
-	}
-
-	/**
-	 * Method for loading form for input new territorial community name
-	 * 
-	 * @param model
-	 * @return addNewCommunity.jsp
-	 */
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	@RequestMapping(value = "/addCommunity", method = RequestMethod.GET)
-	public String addNewCommunity(Model model) {
-		model.addAttribute("newCommunity", new TerritorialCommunity());
-		return "addNewCommunity";
-	}
-
-	/**
-	 * Method for saving new territorial community in the database. Also there
-	 * is validation for checking whether inputing name already exists in
-	 * database or not.
-	 * 
-	 * @param territorialCommunity
-	 * @param result
-	 * @param model
-	 * @return addNewCommunity.jsp (showAllCommunity.jsp page if community name
-	 *         is not valid)
-	 */
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	@RequestMapping(value = "/addCommunity", method = RequestMethod.POST)
-	public String addCommunity(@Valid @ModelAttribute("newCommunity") TerritorialCommunity territorialCommunity,
-			BindingResult result, Model model) {
-		validator.validate(territorialCommunity, result);
-		if (result.hasErrors()) {
-			logger.info("end method: community name is not valid, "
-					+ "return to page for adding new territorial community");
-			return "addNewCommunity";
-
-		}
-		communityService.addCommunity(territorialCommunity);
-		model.addAttribute("territorialCommunity", territorialCommunity);
-		return "redirect:/administrator/users/show-all-communities";
-	}
-
-	/**
-	 * Method for deleting chosen community by territorialCommunityId. If chosen
-	 * community has at least one user who is in this community we will get
-	 * bad_request and it will not be deleted nor from UI by Ajax neither from
-	 * database
-	 */
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	@RequestMapping(value = "/deleteCommunity/{territorialCommunityId}", method = RequestMethod.DELETE)
-	@ResponseBody
-	public ResponseEntity<String> deleteCommunity(@PathVariable Integer territorialCommunityId) {
-		boolean isDeleted = communityService.deleteCommunity(communityService.findById(territorialCommunityId));
-		if (isDeleted) {
-			logger.info("end: deleted chosen community");
-			return new ResponseEntity<String>(HttpStatus.OK);
-		}
-		logger.info("end: it's impossible to delete territorial community");
-		return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
-	}
-
-	
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping("/unlockusers")

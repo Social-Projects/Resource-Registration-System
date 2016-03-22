@@ -20,6 +20,9 @@ public class TerritorialCommunity implements Serializable {
     
     @Column(name = "name", nullable = false)
     private String name;
+    
+    @Column(name = "registrationNumber")
+    private String registrationNumber;
 
     public TerritorialCommunity() {
         
@@ -39,5 +42,14 @@ public class TerritorialCommunity implements Serializable {
 
     public void setName(String name) {
         this.name = name;
-    }  
+    }
+
+	public String getRegistrationNumber() {
+		return registrationNumber;
+	}
+
+	public void setRegistrationNumber(String registrationNumber) {
+		this.registrationNumber = registrationNumber;
+	}  
+    
 }
