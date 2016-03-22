@@ -16,6 +16,8 @@ public class UserDTO extends UserBasicInfoDTO implements Serializable {
     private String role;
 
     private String status;
+    
+    private String territorialCommunity;
 
     @Valid
     private ResourceNumberJson resourceNumberJson;
@@ -40,6 +42,7 @@ public class UserDTO extends UserBasicInfoDTO implements Serializable {
             ResourceNumberJson resourceNumberJson) {
         this(firstName, lastName, middleName, role, login, email, status, address, passport);
         this.resourceNumberJson = resourceNumberJson;
+        this.territorialCommunity = territorialCommunity;
     }  
 
     public String getLogin() {
@@ -88,6 +91,14 @@ public class UserDTO extends UserBasicInfoDTO implements Serializable {
 
     public void setOtherDocuments(List<String> otherDocuments) {
         this.otherDocuments = otherDocuments;
+    }
+
+    public String getTerritorialCommunity() {
+        return territorialCommunity;
+    }
+
+    public void setTerritorialCommunity(String territorialCommunity) {
+        this.territorialCommunity = territorialCommunity;
     }
 
 }

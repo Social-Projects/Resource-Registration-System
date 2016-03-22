@@ -279,8 +279,7 @@
 								class="form-control" style="width: 230px; height: 34px" disabled>
 								<c:forEach items="${territorialCommunities}" var="communities">
 									<c:choose>
-										<c:when
-											test="${userDto.territorialCommunity == communities.name}">
+										<c:when test="${userDto.territorialCommunity == communities.name}">
 											<option selected value="${communities.name}">${communities.name}</option>
 										</c:when>
 										<c:otherwise>
