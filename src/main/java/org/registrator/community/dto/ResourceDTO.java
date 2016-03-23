@@ -20,7 +20,8 @@ public class ResourceDTO {
     @NotEmpty(message = "{msg.notEmptyField}")
     @Pattern(regexp ="^[\\d]{3}:[\\d]{2}:[\\d]{2}:[\\d]{3}:[\\d]{5}:[\\d]{4}$", message = "{msg.resource.identifier.patternMissmatch}")
     private String identifier;
-    
+
+    @NotEmpty(message = "{msg.notEmptyField}")
     @Pattern(regexp ="\\p{IsCyrillic}*", message = "Лише літери лише від А до Я ")
     private String description;
     
@@ -45,29 +46,20 @@ public class ResourceDTO {
     
     @Valid
     private List<ResourceDiscreteValueDTO> resourceDiscrete = new ArrayList<ResourceDiscreteValueDTO>();
+
+    @Valid
+    private String ownerLogin;
+
+    @Valid
+    private Integer resourceId;
+
+    @Valid
+    private boolean noEdit;
     
     public ResourceDTO() {
-        
+        ownerLogin = "";
     }
-        
-    /*
-    public ResourceDTO(ResourceTypeDTO resourceType, String identifier, String description, String registratorName, Date date,
-            ResourceStatus status, String reasonInclusion, String tomeIdentifier, ResourceAreaDTO resourceArea,
-            List<ResourceLinearValueDTO> resourceLinear, List<ResourceDiscreteValueDTO> resourceDiscrete) {
-        this.resourceType = resourceType;
-        this.identifier = identifier;
-        this.description = description;
-        this.registratorName = registratorName;
-        this.date = date;
-        this.status = status;
-        this.reasonInclusion = reasonInclusion;
-        this.tomeIdentifier = tomeIdentifier;
-        this.resourceArea = resourceArea;
-        this.resourceLinear = resourceLinear;
-        this.resourceDiscrete = resourceDiscrete;
-        
-    }
-    */
+
     
     public String getIdentifier() {
         return identifier;
@@ -169,21 +161,27 @@ public class ResourceDTO {
         this.resourceDiscrete = resourceDiscrete;
     }
 
+    public String getOwnerLogin() {
+        return ownerLogin;
+    }
 
-    
-/*    public String toString(){
-        return "\n\n\n" + "**************************************" + "\n" +
-    "Ідентифікатор ресурсу: " + identifier + "\n"+
-    "Тип ресурсу: " + resourceType.getTypeName() + "\n"+
-    "Опис ресурсу: " + description + "\n" + 
-    "Причина внесення в базу:  " + reasonInclusion + "\n" +
-    "Ім'я та прізвище реєстратора   " + registratorName + "\n"+
-    "Номер тому: " + tomeIdentifier + "\n"+
-    "Дата внесення: " + date + "\n"+
-    "Статус: " + status.toString() + "\n"+
-    "Територія: " + resourceArea + "\n" +
-    "Лінійні параметри: " + resourceLinear + "\n" +
-     "Дискретні параметри: "    + resourceDiscrete;
-        
-    }*/
+    public void setOwnerLogin(String ownerLogin) {
+        this.ownerLogin = ownerLogin;
+    }
+
+    public Integer getResourceId() {
+        return resourceId;
+    }
+
+    public void setResourceId(Integer id) {
+        this.resourceId = id;
+    }
+
+    public boolean getNoEdit() {
+        return noEdit;
+    }
+
+    public void setNoEdit(boolean noEdit) {
+        this.noEdit = noEdit;
+    }
 }

@@ -2,6 +2,7 @@ package org.registrator.community.validator;
 
 import org.registrator.community.dao.ResourceRepository;
 import org.registrator.community.dto.ResourceDTO;
+import org.registrator.community.entity.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -21,9 +22,9 @@ public class ResourceDTOValidator implements Validator{
     @Override
     public void validate(Object target, Errors errors) {
         ResourceDTO resourceDTO = (ResourceDTO) target;
-        
-        // Resource already exist
-        if (resourceRepository.findByIdentifier(resourceDTO.getIdentifier()) != null) {
+
+        Resource other = resourceRepository.findByIdentifier(resourceDTO.getIdentifier());
+        if ((other != null)&&(!other.getResourcesId().equals(resourceDTO.getResourceId()))) {
             errors.rejectValue("identifier", "msg.resource.identifier.exist");
         }
         

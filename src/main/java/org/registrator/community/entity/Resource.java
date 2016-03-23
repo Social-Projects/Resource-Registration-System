@@ -1,8 +1,10 @@
 package org.registrator.community.entity;
 
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.persistence.*;
 
@@ -11,28 +13,28 @@ import org.registrator.community.enumeration.ResourceStatus;
 @Entity
 @Table(name = "list_of_resouces")
 public class Resource implements Serializable {
-    
+
     private static final long serialVersionUID = 1L;
 
     @Id
     @Column(name = "resources_id")
     @GeneratedValue
     private Integer resourcesId;
-    
+
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "resource_type_id", nullable = false)
     private ResourceType type;
 
     @Column(name = "identifier", unique = true, nullable = false)
     private String identifier;
-    
+
     @Column(name = "description")
     private String description;
 
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "registrator_id", nullable = false)
     private User registrator;
-    
+
     @Column(name = "date", nullable = false)
     private Date date;
 
@@ -43,30 +45,34 @@ public class Resource implements Serializable {
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "tome_id", nullable = false)
     private Tome tome;
-    
+
     @Column(name = "reason_inclusion", nullable = false)
     private String reasonInclusion;
-    
+
+    @Column(insertable = true, updatable = false)
+    @Temporal(TemporalType.DATE)
+    private Calendar createdAt;
+
     //for deleting the resource with its childs
     @OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.REMOVE, mappedBy="resource")
     public List<Polygon> polygons;
-    
+
     @OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.REMOVE, mappedBy="resource")
     public List<ResourceDiscreteValue> resourceDiscreteValues;
-    
+
     @OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.REMOVE, mappedBy="resource")
     public List<ResourceLinearValue> resourceLinearValues;
-    
+
     @OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.REMOVE, mappedBy="resource")
     public List<Inquiry> inquiries;
-    
-    
+
+
     public Resource() {
-        
+
     }
-    
+
     public Resource(ResourceType type, String identifier, String description, User registrator, Date date,
-            String status, Tome tome, String reasonInclusion) {
+                    String status, Tome tome, String reasonInclusion) {
         this.type = type;
         this.identifier = identifier;
         this.description = description;
@@ -75,6 +81,11 @@ public class Resource implements Serializable {
         this.status = ResourceStatus.valueOf(status.toUpperCase());
         this.tome = tome;
         this.reasonInclusion = reasonInclusion;
+    }
+
+    @PrePersist
+    private void onPrePersist() {
+        createdAt = Calendar.getInstance(TimeZone.getTimeZone("EET"));
     }
 
     public Integer getResourcesId() {
@@ -161,7 +172,7 @@ public class Resource implements Serializable {
         this.reasonInclusion = reasonInclusion;
     }
 
-//    Created for testing
+    //    Created for testing
     @Override
     public String toString() {
         return "id: " + getResourcesId()
@@ -177,21 +188,45 @@ public class Resource implements Serializable {
 
     @Override
     public int hashCode() {
-        return resourcesId;
+        return resourcesId.hashCode();
     }
 
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
+        if (!(obj instanceof Resource))
             return false;
         Resource other = (Resource) obj;
-        if (resourcesId != other.resourcesId)
-            return false;
-        return true;
+        return this.resourcesId.equals(other.resourcesId);
+    }
+
+    public Calendar getCreatedAt() {
+        return createdAt;
+    }
+
+    public List<Polygon> getPolygons() {
+        return polygons;
+    }
+
+    public void setPolygons(List<Polygon> polygons) {
+        this.polygons = polygons;
+    }
+
+    public List<ResourceDiscreteValue> getResourceDiscreteValues() {
+        return resourceDiscreteValues;
+    }
+
+    public void setResourceDiscreteValues(List<ResourceDiscreteValue> resourceDiscreteValues) {
+        this.resourceDiscreteValues = resourceDiscreteValues;
+    }
+
+    public List<ResourceLinearValue> getResourceLinearValues() {
+        return resourceLinearValues;
+    }
+
+    public void setResourceLinearValues(List<ResourceLinearValue> resourceLinearValues) {
+        this.resourceLinearValues = resourceLinearValues;
     }
 }
 

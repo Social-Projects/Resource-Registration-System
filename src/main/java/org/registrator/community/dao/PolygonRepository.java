@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface PolygonRepository extends JpaRepository<Polygon, Integer> {
+public interface PolygonRepository extends JpaRepository<Polygon, Long> {
 
     List<Polygon> findByResource(Resource resource);
 
@@ -54,4 +54,6 @@ public interface PolygonRepository extends JpaRepository<Polygon, Integer> {
     List<Polygon> findByPoint(@Param("lat")Double lat,
                               @Param("lng")Double lng,
                               Pageable pageable);
+
+    Long deleteByResource(Resource resource);
 }

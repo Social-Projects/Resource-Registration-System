@@ -41,4 +41,6 @@ public interface ResourceDiscreteValueRepository extends JpaRepository<ResourceD
     List<ResourceDiscreteValue> findAllBySmallerValueAndDiscreteParameter (
             @Param("val") Double d,
             @Param("discreteParameter") DiscreteParameter discreteParameter);
+
+    Long deleteByResource(Resource resource);
 }

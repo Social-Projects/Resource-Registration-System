@@ -1,44 +1,30 @@
 package org.registrator.community.controller;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.validation.Valid;
-
-import org.registrator.community.dto.json.SearchResultJson;
+import com.google.gson.Gson;
 import org.registrator.community.dto.ParameterSearchResultDTO;
 import org.registrator.community.dto.ResourceDTO;
 import org.registrator.community.dto.UserDTO;
 import org.registrator.community.dto.json.PolygonJson;
 import org.registrator.community.dto.json.ResourceSearchJson;
+import org.registrator.community.dto.json.SearchResultJson;
 import org.registrator.community.entity.*;
-import org.registrator.community.service.DiscreteParameterService;
-import org.registrator.community.service.LinearParameterService;
-import org.registrator.community.service.ResourceDeleteService;
-import org.registrator.community.service.ResourceService;
-import org.registrator.community.service.ResourceTypeService;
-import org.registrator.community.service.UserService;
+import org.registrator.community.exceptions.BadRequest;
+import org.registrator.community.exceptions.ResourceEntityNotFound;
+import org.registrator.community.service.*;
 import org.registrator.community.validator.ResourceDTOValidator;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
-import com.google.gson.Gson;
+import javax.validation.Valid;
+import java.util.*;
 
 @Controller
 @RequestMapping(value = "/registrator/resource")
@@ -71,85 +57,103 @@ public class ResourceController {
     /**
      * Method for loading form for input the parameter of resource (with
      * existing resource types)
-     * 
+     *
      * @param model
      * @return addResource.jsp
      */
     @PreAuthorize("hasRole('ROLE_REGISTRATOR')")
     @RequestMapping(value = "/addresource", method = RequestMethod.GET)
-    public String addResourceForm(Model model) {
+    public String addResourceForm(@RequestParam(value = "mode", defaultValue = "add") String mode,
+                                  @RequestParam(value = "id", defaultValue = "") String identifier,
+                                  Model model) {
+
+
+
+        ResourceDTO resourceDTO = null;
+        switch (mode) {
+            case "add":
+                resourceDTO = resourceService.createNewResourceDTO();
+                break;
+            case "edit":
+                resourceDTO = resourceService.findByIdentifier(identifier);
+                if (!resourceService.userCanEditResource(resourceDTO)) {
+                    model.addAttribute("noEdit", true);
+                    model.addAttribute("identifier", resourceDTO.getIdentifier());
+                    return "redirect:get/{identifier}";
+                }
+                break;
+            default:
+                throw new BadRequest();
+        }
 
         /* load list of resource types on UI form */
         List<ResourceType> listOfResourceType = resourceTypeService.findAll();
         logger.info(listOfResourceType.size() + " resource types was found");
         model.addAttribute("listOfResourceType", listOfResourceType);
-        ResourceDTO newresource = new ResourceDTO();
-
-        /*
-         * fill default registration number of resource depending on
-         * authenticated user
-         */
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        newresource.setIdentifier(resourceService.getRegistrationNumber(auth.getName()));
-        model.addAttribute("newresource", newresource);
+        model.addAttribute("resource", resourceDTO);
+        model.addAttribute("editMode", "edit".equals(mode));
         return "addResource";
     }
 
+
     /**
      * Method save the resource with all parameters from UI in database
-     * 
+     *
      * @param resourceDTO
      * @param result
      * @param model
-     * @param ownerLogin
      * @return showResource.jsp (addResource.jsp page if resource not valid)
      */
     @PreAuthorize("hasRole('ROLE_REGISTRATOR')")
     @RequestMapping(value = "/addresource", method = RequestMethod.POST)
-    public String addResource(@Valid @ModelAttribute("newresource") ResourceDTO resourceDTO, BindingResult result,
-            Model model, String ownerLogin) {
+    public String addResource(@RequestParam(value = "mode", defaultValue = "add") String mode,
+                              @Valid @ModelAttribute("resource") ResourceDTO resourceDTO,
+                              BindingResult result,
+                              Model model) {
 
-        logger.info("The ownerLogin is " + ownerLogin);
+        logger.info("The ownerLogin is " + resourceDTO.getOwnerLogin());
 
-        /* check if given resourceDTO is valid */
         validator.validate(resourceDTO, result);
         if (result.hasErrors()) {
             logger.info("The resoursrDTO is not valid");
-            model.addAttribute("newresource", resourceDTO);
-            model.addAttribute("ownerLogin", ownerLogin);
+            model.addAttribute("resource", resourceDTO);
             return "addResource";
         }
-        /* get the logged registrar by login */
+
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User registrator = userService.getUserByLogin(auth.getName());
         logger.info("The logged register is" + registrator.getLastName() + " " + registrator.getFirstName());
 
         /* save resourceDTO on service layer and inquiry */
-        resourceDTO = resourceService.addNewResource(resourceDTO, ownerLogin, registrator);
+        resourceDTO = resourceService.saveResource(resourceDTO, registrator);
         logger.info("Resource was successfully saved");
-        model.addAttribute("resource", resourceDTO);
-        return "showResource";
+        model.addAttribute("identifier", resourceDTO.getIdentifier());
+        return "redirect:get/{identifier}";
 
     }
 
     /**
      * Show the information about resource by identifier
-     * 
+     *
      * @param identifier
      * @param model
      * @return
      */
     @RequestMapping(value = "/get/{identifier}", method = RequestMethod.GET)
-    public String getResourceByIdentifier(@PathVariable("identifier") String identifier, Model model) {
+    public String getResourceByIdentifier(@PathVariable("identifier") String identifier,
+                                          @RequestParam(value = "noEdit", defaultValue = "false") boolean noEdit,
+                                          Model model)
+            throws ResourceEntityNotFound {
 
         ResourceDTO resourceDTO = resourceService.findByIdentifier(identifier);
+        resourceDTO.setNoEdit(noEdit);
         model.addAttribute("resource", resourceDTO);
         return "showResource";
     }
 
     /**
      * Load the list of all resource parameters of selected resource type
-     * 
+     *
      * @param typeName
      * @param model
      * @return resourceValues.jsp
@@ -172,9 +176,8 @@ public class ResourceController {
     /**
      * Depending on chosen resource type store all parameters and send them to
      * view at the page Resource search by parameters
-     * 
-     * @param i
-     *            - Resource type, received from view
+     *
+     * @param i     - Resource type, received from view
      * @param model
      * @return
      */
@@ -193,8 +196,8 @@ public class ResourceController {
     /**
      * Depending on received parameters create List of resourceDTO and send them
      * to view
-     * 
-     * @param json - search parameters in JSON format
+     *
+     * @param json  - search parameters in JSON format
      * @param model
      * @return
      */
@@ -234,28 +237,23 @@ public class ResourceController {
     /**
      * Create the Set of resources identifiers depending on received parameters
      * and generate JSON response
-     * 
-     * @param minLat
-     *            - minimum latitude
-     * @param maxLat
-     *            - maximum latitude
-     * @param minLng
-     *            - minimum longitude
-     * @param maxLng
-     *            - maximum longitude
-     * @param resType
-     *            - resource type id
+     *
+     * @param minLat  - minimum latitude
+     * @param maxLat  - maximum latitude
+     * @param minLng  - minimum longitude
+     * @param maxLng  - maximum longitude
+     * @param resType - resource type id
      * @param model
      * @return JSON with information about polygons which can be located between
-     *         received coordinates
+     * received coordinates
      */
 
     @ResponseBody
     @RequestMapping(value = "/getResourcesByAreaLimits", method = RequestMethod.POST)
     public String showAllResourcesByAreaLimits(@RequestParam("minLat") Double minLat,
-            @RequestParam("maxLat") Double maxLat, @RequestParam("minLng") Double minLng,
-            @RequestParam("maxLng") Double maxLng, @RequestParam("resType") String resType,
-            @RequestParam("page") Integer page, Model model) {
+                                               @RequestParam("maxLat") Double maxLat, @RequestParam("minLng") Double minLng,
+                                               @RequestParam("maxLng") Double maxLng, @RequestParam("resType") String resType,
+                                               @RequestParam("page") Integer page, Model model) {
         SearchResultJson result = new SearchResultJson();
         Integer countResults = resourceService.countAllByAreaLimits(minLat, maxLat, minLng, maxLng);
 
@@ -278,14 +276,12 @@ public class ResourceController {
     /**
      * Search on map by point Create set of resource identifiers depending on
      * received point coordinates
-     * 
-     * @param lat
-     *            - point latitude
-     * @param lng
-     *            - point longitude
+     *
+     * @param lat   - point latitude
+     * @param lng   - point longitude
      * @param model
      * @return JSON with information about polygons where received point can be
-     *         located
+     * located
      */
     @ResponseBody
     @RequestMapping(value = "/getResourcesByPoint", method = RequestMethod.POST)
@@ -298,7 +294,7 @@ public class ResourceController {
         List<PolygonJson> polygons = new ArrayList<>();
 
         int countPolygons = 0;
-        for (Resource resource: resources) {
+        for (Resource resource : resources) {
             polygons.addAll(resourceService.createPolygonJSON(resource, countPolygons));
             countPolygons = polygons.size();
         }
@@ -312,7 +308,7 @@ public class ResourceController {
 
     /**
      * View for the Search on map page
-     * 
+     *
      * @param model
      * @return
      */
@@ -326,9 +322,8 @@ public class ResourceController {
 
     /**
      * Find the list of owners with similar surname
-     * 
-     * @param ownerDesc
-     *            corresponds to first letters of surname
+     *
+     * @param ownerDesc corresponds to first letters of surname
      * @return userList list of users
      */
     @ResponseBody
@@ -340,7 +335,7 @@ public class ResourceController {
 
     /**
      * Find the selected owner by login
-     * 
+     *
      * @param ownerLogin
      * @return owner
      */
@@ -369,7 +364,7 @@ public class ResourceController {
 
     /**
      * Method delete resource with given identifier.
-     * 
+     *
      * @param resourceIdentifier - identifier of the resource.
      * @return searchOnMap.jsp
      */
@@ -381,5 +376,11 @@ public class ResourceController {
         logger.info("end deleteResource");
         return "redirect:/registrator/resource/searchOnMap";
     }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    private static class ResponseBadRequest extends RuntimeException {
+
+    }
+
 
 }

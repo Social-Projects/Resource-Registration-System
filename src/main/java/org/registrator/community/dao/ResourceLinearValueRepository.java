@@ -28,4 +28,6 @@ public interface ResourceLinearValueRepository extends JpaRepository<ResourceLin
             @Param("linearParameter") LinearParameter linearParameter
     );
 
+    Long deleteByResource(Resource resource);
+
 }

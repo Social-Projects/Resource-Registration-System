@@ -209,11 +209,20 @@
 		<put-attribute name="body" type="template"
 			value="/WEB-INF/views/templates/addNewCommunity.jsp" />
 	</definition>
+    
+	<definition name="editCommunity" extends="homepage">
+	   <put-attribute name="body" type="template"
+	       value="/WEB-INF/views/templates/editCommunity.jsp" />
+	</definition>
 
 	<definition name="showAllCommunity" extends="homepage">
 		<put-attribute name="body" type="template"
 			value="/WEB-INF/views/templates/showAllCommunity.jsp" />
 	</definition>
 
+	<definition name="error" extends="homepage">
+		<put-attribute name="body" type="template"
+					   value="/WEB-INF/views/templates/error.jsp" />
+	</definition>
 
 </tiles-definitions>

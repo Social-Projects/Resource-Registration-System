@@ -4,6 +4,7 @@ import java.util.List;
 
 public class ResourceLinearValueDTO {
 
+    private Integer id;
     private List<SegmentLinearDTO> segments;
     private String linearParameterDescription;
     private String linearParameterUnit;
@@ -37,4 +38,11 @@ public class ResourceLinearValueDTO {
         this.linearParameterUnit = linearParameterUnit;
     }
 
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 }

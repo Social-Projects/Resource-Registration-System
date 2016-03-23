@@ -21,6 +21,12 @@
         </c:if>
 		<c:if test="${!empty resource}">
 		<h1>Ресурс</h1>
+            <c:if test="${resource.noEdit}">
+                <div class="alert alert-danger">
+                    <spring:message code="label.resource.noEdit" />
+                </div>
+            </c:if>
+
 			<table id="datatable" class="table display">
 				<tr>
 					<td><spring:message code="label.resource.description" /> :</td>
@@ -131,6 +137,8 @@
 					<div id="target" class="col-sm-5"></div>
 					<div class="col-sm-5">
 						<sec:authorize access="hasRole('REGISTRATOR')">
+							<div id="editResource" class="btn btn-primary" role="button" style="margin-bottom:10px">
+								<spring:message code="label.resource.edit"/></div>
 							<div id="deleteResource" class="btn btn-danger" role="button" style="margin-bottom:10px">
 							<spring:message code="label.restype.delete"/></div>
 						</sec:authorize>

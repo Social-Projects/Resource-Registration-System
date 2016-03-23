@@ -1,5 +1,5 @@
 $(function() {
-	$(document).on("click","#deleterecommunity",
+	$(document).on("click","#deletecommunity",
 					function(event) {
 		event.preventDefault();
 						bootbox.confirm(jQuery.i18n.prop('msg.confirmDeleteCommunity'),function(result){

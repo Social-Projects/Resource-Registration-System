@@ -14,14 +14,14 @@ public interface ResourceRepository extends JpaRepository<Resource, Long> {
     @Query("Select r" +
             " From Resource r " +
             "Where r.identifier = :identifier")
-    public Resource findByIdentifier(@Param("identifier") String identifier);
+    Resource findByIdentifier(@Param("identifier") String identifier);
 
     List<Resource> findByType(ResourceType type);
 
     long count();
     
     @Query("SELECT r.description FROM Resource r WHERE r.description LIKE :searchTerm%")
-    public Set<String> findDescriptionsLikeProposed(@Param("searchTerm") String searchTerm);
+    Set<String> findDescriptionsLikeProposed(@Param("searchTerm") String searchTerm);
 
     List<Resource> findAll();
 

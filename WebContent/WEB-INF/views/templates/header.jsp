@@ -16,27 +16,21 @@
 		<div class="col-md-7">
 
 			<c:if test="${pageContext.request.userPrincipal.name != null}">
-				<div class="col-md-9">
-					<div class="btn-group">
-						<button class="btn btn-primary btn-sm">${pageContext.request.userPrincipal.name}</button>
-						<button class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown">
-							<span class="caret"></span></button>
-						<ul class="dropdown-menu">
-							<li>
-								<a href="${pageContext.request.contextPath}/change_password" class="forgot-password">
-									<spring:message code="label.changePassword" />
-								</a>
-							</li>
-							<li class="divider"></li>
-							<li>
-								<a href="<c:url value="/logout"/>"><spring:message code="label.signOut"/></a>
-							</li>
-						</ul>
-					</div>
-				</div>
-				<div class="col-md-3">
-					<a href="<c:url value="/logout"/>" class="btn btn-primary btn-sm"
-						role="button"><spring:message code="label.signOut" /></a>
+				<div class="btn-group" style="float:right">
+					<button class="btn btn-primary btn-sm">${pageContext.request.userPrincipal.name}</button>
+					<button class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown">
+						<span class="caret"></span></button>
+					<ul class="dropdown-menu">
+						<li>
+							<a href="${pageContext.request.contextPath}/change_password" class="forgot-password">
+								<spring:message code="label.changePassword"/>
+							</a>
+						</li>
+						<li class="divider"></li>
+						<li>
+							<a href="<c:url value="/logout"/>"><spring:message code="label.signOut"/></a>
+						</li>
+					</ul>
 				</div>
 			</c:if>
 		</div>

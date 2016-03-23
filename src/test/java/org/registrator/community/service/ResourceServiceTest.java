@@ -7,6 +7,7 @@ import org.registrator.community.dto.json.PolygonJson;
 import org.registrator.community.dto.*;
 import org.registrator.community.dto.json.ResourceSearchJson;
 import org.registrator.community.entity.*;
+import org.registrator.community.exceptions.ResourceEntityNotFound;
 import org.registrator.community.service.impl.ResourceServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -188,7 +189,7 @@ public class ResourceServiceTest   {
     }
     
     @Test
-    public void findResourceByIdentifierValidId() {
+    public void findResourceByIdentifierValidId() throws Exception {
         
         when(resourceRepository.findByIdentifier(validID)).thenReturn(validResource);
 
@@ -207,8 +208,8 @@ public class ResourceServiceTest   {
         
     }
 
-    @Test
-    public void findResourceByIdentifierNonValidId() {
+    @Test(expectedExceptions = ResourceEntityNotFound.class)
+    public void findResourceByIdentifierNonValidId() throws Exception{
         
         ResourceDTO resourceDTO = resourceService.findByIdentifier(nonValidID);
 
@@ -216,8 +217,8 @@ public class ResourceServiceTest   {
         
     }
 
-    @Test
-    public void findResourceByIdentifierNullId() {
+    @Test(expectedExceptions = ResourceEntityNotFound.class)
+    public void findResourceByIdentifierNullId() throws Exception{
         
         ResourceDTO resourceDTO = resourceService.findByIdentifier(null);
         assertTrue(resourceDTO == null, "Find by null should return null");
@@ -225,7 +226,7 @@ public class ResourceServiceTest   {
     }
 
     @Test(dependsOnMethods = {"findResourceByIdentifierValidId"})
-    public void addNewResourceValid() {
+    public void saveResourceValid() throws Exception{
         
     	// ResourceServiceImpl use findByIdentifier internally to return created resource
     	// stubbing this behavior
@@ -238,15 +239,14 @@ public class ResourceServiceTest   {
 
         String ownerLogin = "user";
 
-        ResourceDTO result = resourceService.addNewResource(validResourceDTO, ownerLogin, registrator);
+        ResourceDTO result = resourceService.saveResource(validResourceDTO, registrator);
         assertEquals(result.getIdentifier(), validResourceDTO.getIdentifier(), "Creation of valid Resource should be successful");
-        verify(inquiryService, times(1)).addInputInquiry(same(ownerLogin), any(), same(registrator));
         
     }
 
-    @Test(dependsOnMethods = {"findResourceByIdentifierValidId", "addNewResourceValid"})
+    @Test(dependsOnMethods = {"findResourceByIdentifierValidId", "saveResourceValid"})
     @SuppressWarnings("unchecked")
-    public void addNewResourceCheckSaveResourceParameters() {
+    public void saveResourceCheckSaveResourceParameters() throws Exception{
         
         resourceService = spy(resourceService);
         doReturn(validResourceDTO).when(resourceService).findByIdentifier(validID);
@@ -262,7 +262,7 @@ public class ResourceServiceTest   {
         }
         when(validPolygonAreaDTO.getPoints()).thenReturn(listPoints);
 
-        ResourceDTO result = resourceService.addNewResource(validResourceDTO, ownerLogin, registrator);
+        ResourceDTO result = resourceService.saveResource(validResourceDTO, registrator);
         assertEquals(result.getIdentifier(), validResourceDTO.getIdentifier(), "Creation of valid Resource should be succesful");
         verify(validPolygonAreaDTO, atLeast(1)).getPoints();
         verify(polygonRepository, atLeast(1)).save(any(Polygon.class));
@@ -271,22 +271,22 @@ public class ResourceServiceTest   {
         
     }
 
-    @Test(dependsOnMethods = {"findResourceByIdentifierValidId", "addNewResourceValid"})
-    public void addNewResourceEmptyOwner() {
+    @Test(dependsOnMethods = {"findResourceByIdentifierValidId", "saveResourceValid"})
+    public void saveResourceEmptyOwner() throws Exception{
         
         resourceService = spy(resourceService);
         doReturn(validResourceDTO).when(resourceService).findByIdentifier(validID);
         when(resourceRepository.save(any(Resource.class))).thenReturn(validResource);
         ownerLogin = "";
-        ResourceDTO result = resourceService.addNewResource(validResourceDTO, ownerLogin, registrator);
+        ResourceDTO result = resourceService.saveResource(validResourceDTO, registrator);
         assertEquals(result.getIdentifier(), validResourceDTO.getIdentifier(), "Creation Resource with empty owner should be successful");
         verify(inquiryService, times(0)).addInputInquiry(same(ownerLogin), any(), same(registrator));
         
     }
     
     
-    @Test(dependsOnMethods = {"findResourceByIdentifierValidId", "addNewResourceValid"})
-    public void addNewResourceIncrementRegistrationNumber() {
+    @Test(dependsOnMethods = {"findResourceByIdentifierValidId", "saveResourceValid"})
+    public void saveResourceIncrementRegistrationNumber() throws Exception{
         
         resourceService = spy(resourceService);
         doReturn(validResourceDTO).when(resourceService).findByIdentifier(validID);
@@ -301,7 +301,7 @@ public class ResourceServiceTest   {
 
         when(resourceNumberRepository.findResourceNumberByUser(registrator)).thenReturn(resourceNumber);
 
-        ResourceDTO result = resourceService.addNewResource(validResourceDTO, ownerLogin, registrator);
+        ResourceDTO result = resourceService.saveResource(validResourceDTO, registrator);
         assertEquals(result.getIdentifier(), validResourceDTO.getIdentifier(), "Creation Resource with empty owner should be successful");
         verify(inquiryService, times(0)).addInputInquiry(same(ownerLogin), any(), same(registrator));
         verify(resourceNumber, times(1)).setNumber(same(number + 1));

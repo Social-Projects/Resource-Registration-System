@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.registrator.community.dao.CommunityRepository;
 import org.registrator.community.dao.UserRepository;
+import org.registrator.community.dto.CommunityDTO;
 import org.registrator.community.entity.TerritorialCommunity;
 import org.registrator.community.entity.User;
 import org.registrator.community.service.CommunityService;
@@ -62,5 +63,22 @@ public class CommunityServiceImpl implements CommunityService{
     @Override
     public List<TerritorialCommunity> findAllByAsc() {
         return communityRepository.findAllByAsc();
+    }
+    
+    /**
+     * Update community
+     * @param territorialCommunity Territorial Community
+     */
+    @Override
+    public boolean updateCommunity(CommunityDTO communityDTO) {
+        TerritorialCommunity territorialCommunity = communityRepository.findOne(communityDTO.getTerritorialCommunityId());
+        if(territorialCommunity != null){
+            territorialCommunity.setName(communityDTO.getName());
+            if(communityDTO.getRegistrationNumber() != null)
+                territorialCommunity.setRegistrationNumber(communityDTO.getRegistrationNumber());
+            communityRepository.save(territorialCommunity);
+            return true;
+        }
+        return false;
     }
 }

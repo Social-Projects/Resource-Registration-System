@@ -13,6 +13,10 @@ $(document).on("click","#outputInquiry",function(){
 	})	
 })
 
+$(document).on("click","#editResource",function(){
+    window.location = baseUrl.toString() +'/registrator/resource/addresource?mode=edit&id='+ $('#resourceIdentifierCopy').val();
+})
+
 $(document).on("click","#deleteResource",function(){
 	bootbox.confirm(jQuery.i18n.prop('msg.confirmDeleteResource'),function(result){
 		if (result) {

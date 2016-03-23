@@ -10,7 +10,7 @@
 	</h4>
 </div>
 <p>
-	<a href="<c:url value='/administrator/users/addCommunity'/>"
+	<a href="<c:url value='addCommunity'/>"
 		class="btn btn-success" role="button"><spring:message
 			code="label.community.add"/></a>
 </p>
@@ -18,7 +18,8 @@
 
 	<thead>
 		<tr>
-			<th style="width: 80%;"><spring:message code="label.community.name" /></th>
+			<th style="width: 40%;"><spring:message code="label.community.name" /></th>
+            <th style="width: 40%;"><spring:message code="label.community.titleNumber" /></th>
 			<th style="text-align: center;"><spring:message code="label.restype.actions" /></th>
 		</tr>
 	</thead>
@@ -27,13 +28,20 @@
 		<c:if test="${not empty listOfTerritorialCommunity}">
 			<c:forEach items="${listOfTerritorialCommunity}" var="commun">
 				<tr>
-					<td>${commun.name}</td>
-					<td>
-						 <div class="wrapper" style="text-align: center;">
-							<a href="deleteCommunity/${commun.territorialCommunityId}" class="btn btn-danger"
-								id="deleterecommunity" role="button"><spring:message code="label.community.delete" /></a>
-						</div>
-					</td>
+	               <td>${commun.name}</td>
+	               <td>${commun.registrationNumber}</td>
+	               <td style="text-align: center; width:100%;">
+	                   <div style="display:inline-block;margin: 2px auto;width:45%;min-width:94px;"> 
+	                       <a href="editCommunity?id=${commun.territorialCommunityId}" class="btn btn-primary" style="width:100%;"
+                                id="editcommunity" role="button"><spring:message code="label.community.edit" />
+	                       </a>
+	                   </div> 
+	                   <div style="display:inline-block;margin: 2px auto;width:45%;min-width:94px;">
+	                       <a href="deleteCommunity/${commun.territorialCommunityId}" class="btn btn-danger" style="width:100%;"
+                                id="deletecommunity" role="button"><spring:message code="label.community.delete" />
+	                       </a>
+	                   </div> 
+	               </td>
 				</tr>
 			</c:forEach>
 		</c:if>

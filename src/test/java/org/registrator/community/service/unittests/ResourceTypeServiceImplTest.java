@@ -162,8 +162,8 @@ public class ResourceTypeServiceImplTest {
 				});
 
 		when(
-				resourceService.addNewResource(any(ResourceDTO.class),
-						any(String.class), any(User.class))).then(
+				resourceService.saveResource(any(ResourceDTO.class),
+						any(User.class))).then(
 				new Answer<ResourceDTO>() {
 					public ResourceDTO answer(InvocationOnMock invo) {
 						ResourceDTO arg = invo.getArgumentAt(0,
@@ -230,7 +230,7 @@ public class ResourceTypeServiceImplTest {
 				resDTO.setStatus(ResourceStatus.ACTIVE);
 				resDTO.setReasonInclusion("Reason");
 
-				resourceService.addNewResource(resDTO, "dummy", user);
+				resourceService.saveResource(resDTO, user);
 			}
 		}
 		return result;
