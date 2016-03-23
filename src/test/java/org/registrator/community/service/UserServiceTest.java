@@ -425,6 +425,8 @@ public class UserServiceTest {
 	public void getUserDto(String login, boolean isPositive) {
 		boolean exception = false;
 		UserDTO expected = createUserDto(login);
+	    if(userRepository.findUserByLogin(login) != null)
+		    expected.setTerritorialCommunity(userRepository.findUserByLogin(login).getTerritorialCommunity().getName());
 		if(isPositive)
 			expected.getPassport().setComment("comment");
 		User expectedUser = null;
