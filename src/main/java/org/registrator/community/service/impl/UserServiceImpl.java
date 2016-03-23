@@ -333,7 +333,14 @@ public class UserServiceImpl implements UserService {
 			}
 			userdto.setWillDocument(willDocumentDTO);
 		}
-		return formUserDTO(user);
+		if (!user.getOtherDocuments().isEmpty()) {
+            List<String> otherDocuments = new ArrayList<String>();
+            for (OtherDocuments otherDocument : user.getOtherDocuments()) {
+                otherDocuments.add(otherDocument.getComment());
+            }
+            userdto.setOtherDocuments(otherDocuments);
+        }
+		return userdto;
 
 	}
 
@@ -459,57 +466,7 @@ public class UserServiceImpl implements UserService {
 	    }
 	    
 	}
-/*	@Override
-	@Transactional
-	public void registerUser(RegistrationForm registrationForm) {
-		TerritorialCommunity territorialCommunity = communityService
-				.findByName(registrationForm.getTerritorialCommunity());
-		User user = new User();
-		user.setLogin(registrationForm.getLogin());
-		user.setEmail(registrationForm.getEmail());
-		user.setPasswordHash(userPasswordEncoder.encode(registrationForm.getPassword()));
-		user.setFirstName(registrationForm.getFirstName());
-		user.setLastName(registrationForm.getLastName());
-		user.setMiddleName(registrationForm.getMiddleName());
-		user.setPhoneNumber(registrationForm.getPhoneNumber());
-		user.setRole(roleRepository.findRoleByType(RoleType.USER));
-		user.setStatus(UserStatus.INACTIVE);
-		user.setPhoneNumber(registrationForm.getPhoneNumber());
-		user.setDateOfAccession(registrationForm.getDateOfAccession());
-		user.setTerritorialCommunity(territorialCommunity);
 
-		userRepository.save(user);
-		log.info("Inserted new user data into 'users' table: user_id = " + user.getUserId());
-
-		if (userRepository.findUserByLogin(user.getLogin()) != null) {
-			// insert user's passport data into "passport_data" table
-			PassportInfo passport = new PassportInfo();
-			passport.setUser(user);
-			passport.setSeria(registrationForm.getSeria());
-			passport.setNumber((registrationForm.getNumber()));
-			passport.setPublishedByData(registrationForm.getPublishedByData());
-
-			passportRepository.save(passport);
-			log.info("Inserted passport data for user with passport_data_id", user.getLogin(),
-					passport.getPassportId());
-
-			// insert user's address records into "address" table
-			Address address = new Address();
-			address.setUser(user);
-			address.setCity(registrationForm.getCity());
-			address.setRegion(registrationForm.getRegion());
-			address.setDistrict(registrationForm.getDistrict());
-			address.setStreet(registrationForm.getStreet());
-			address.setBuilding(registrationForm.getBuilding());
-			address.setFlat(registrationForm.getFlat());
-			address.setPostCode(registrationForm.getPostcode());
-
-			addressRepository.save(address);
-			log.info("Inserted address data for user with address_id", user.getLogin(), address.getAddressId());
-		}
-
-	}
-*/
 	@Transactional
 	@Override
 	public boolean checkUsernameNotExistInDB(String login) {
@@ -536,53 +493,6 @@ public class UserServiceImpl implements UserService {
 			userDtos.add(userdto);
 		}
 		return userDtos;
-	}
-
-	private UserDTO formUserDTO(User user) {
-		PassportInfo passportInfo = user.getPassport().get(user.getPassport().size() - 1);
-		PassportDTO passportDto = new PassportDTO(passportInfo.getSeria(), passportInfo.getNumber().toString(),
-				passportInfo.getPublishedByData());
-		if (passportInfo.getComment() != null) {
-			passportDto.setComment(passportInfo.getComment());
-		}
-		Address address = user.getAddress().get(user.getAddress().size() - 1);
-		AddressDTO addressDto = new AddressDTO(address.getPostCode(), address.getRegion(), address.getDistrict(),
-				address.getCity(), address.getStreet(), address.getBuilding(), address.getFlat());
-		ResourceNumber resourceNumber = resourceNumberRepository.findResourceNumberByUser(user);
-		Tome tome = tomeRepository.findTomeByRegistrator(user);
-		ResourceNumberJson resourceNumberJson = null;
-		if ((tome != null) && (resourceNumber != null)) {
-			resourceNumberJson = new ResourceNumberJson(resourceNumber.getNumber().toString(),
-					resourceNumber.getRegistratorNumber(), tome.getIdentifier());
-		} else {
-			resourceNumberJson = new ResourceNumberJson();
-			resourceNumberJson = new ResourceNumberJson();
-			resourceNumberJson.setResource_number("0");
-			resourceNumberJson.setRegistrator_number("0");
-			resourceNumberJson.setIdentifier("0");
-		}
-		UserDTO userdto = new UserDTO(user.getFirstName(), user.getLastName(), user.getMiddleName(),
-				user.getRole().toString(), user.getLogin(), user.getEmail(), user.getStatus().toString(), addressDto,
-				passportDto, user.getTerritorialCommunity().getName(), resourceNumberJson);
-		if (!user.getWillDocument().isEmpty()) {
-			WillDocument willDocument = user.getWillDocument().get(user.getWillDocument().size() - 1);
-			WillDocumentDTO willDocumentDTO = new WillDocumentDTO();
-			willDocumentDTO.setAccessionDate(willDocument.getAccessionDate());
-			if (willDocument.getComment() != null) {
-				willDocumentDTO.setComment(willDocument.getComment());
-			}
-			userdto.setWillDocument(willDocumentDTO);
-		}
-
-		if (!user.getOtherDocuments().isEmpty()) {
-			List<String> otherDocuments = new ArrayList<String>();
-			for (OtherDocuments otherDocument : user.getOtherDocuments()) {
-				otherDocuments.add(otherDocument.getComment());
-			}
-			userdto.setOtherDocuments(otherDocuments);
-		}
-
-		return userdto;
 	}
 
 	@Override

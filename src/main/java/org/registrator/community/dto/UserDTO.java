@@ -40,6 +40,7 @@ public class UserDTO extends UserBasicInfoDTO implements Serializable {
             ResourceNumberJson resourceNumberJson) {
         this(firstName, lastName, middleName, role, login, email, status, address, passport);
         this.resourceNumberJson = resourceNumberJson;
+        super.setTerritorialCommunity(territorialCommunity);
     }  
 
     public String getLogin() {
