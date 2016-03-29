@@ -1,0 +1,177 @@
+body {
+    /*min-width: 1200px;*/
+}
+
+/*@media (max-width: 1200px) {body {background:#c00;min-width:1200px;}}*/
+/*@media (max-width: 992px) {body {background:#c00;min-width:1200px;}}*/
+/*@media (max-width: 768px) {body {background:#c00;min-width:1200px;}}*/
+/*.container {width: 1100px !important; margin: auto;}*/
+
+#header {
+    height: 100px;
+    padding-top: 2px;
+}
+
+.languages {
+    list-style: none;
+    display: flex;
+}
+
+#menubaruser, #menubarreg, #menubaradmin, #menubarcom{
+    height: 40px;
+    line-height: 40px;
+    vertical-align: middle;
+}
+
+#menubaruser li, #menubarreg li, #menubaradmin li, #menubarcom li{
+    padding-left: 7px;
+}
+
+.dropdown {
+    position: relative;
+}
+
+.dropdown_menu {
+    display: none;
+    list-style: none;
+    background: #f8f8f8;
+    border-radius: 0px 0px 4px 4px;
+    border: 1px solid #e7e7e7;
+    border-top-style: none;
+    padding: 3px;
+    width: 200px;
+    position: absolute;
+    top: 50px;
+    left: 0;
+    z-index: 10;
+}
+
+.dropdown_menu a {
+    color: #777;
+    text-decoration: none;
+}
+
+.dropdown_menu a:hover {
+    color: #000;
+}
+
+#footer {
+    margin-top: 20px;
+    border-top: solid 1px black;
+    clear: both;
+    text-align: center;
+    line-height: 20px;
+}
+
+/*Google maps buttons*/
+.gmap-button {
+    border-radius: 2px;
+    box-shadow: 0 1px 4px -1px rgba(0, 0, 0, 0.3);
+    position: absolute;
+    background-color: white;
+    padding: 8px;
+    margin: 10px 10px 0 0px;
+    border: none;
+    text-decoration: none;
+    display: block;
+    cursor: pointer;
+    color: black;
+}
+
+.gmap-button:hover {
+    background-color: #ededed;
+    text-decoration: none;
+    color: black;
+}
+
+.gmap-input {
+    border-radius: 2px;
+    box-shadow: 0 1px 4px -1px rgba(0, 0, 0, 0.3);
+    position: absolute;
+    background-color: white;
+    padding: 8px;
+    margin: 10px 10px 0 0px;
+    border: none;
+}
+
+/*Google maps infowindow*/
+
+#infowindow_table tr{
+    line-height: 15px;
+}
+
+#infowindow_table th,td{
+    padding: 3px 5px;
+    font-size: 15px;
+}
+
+#cp-wrap .toggle{
+    display: none;
+    margin: 10px 10px 0 0;
+    width: 200px;
+}
+
+#cp-wrap .active {
+    display: block;
+}
+
+#cp-wrap .toggle .controls{
+    position: relative;
+    display: inline-block;
+    margin: 0;
+}
+
+#mapManual {
+    font-style: italic;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.spoiler {
+    display: none;
+    font-size: 13px;
+    font-style: italic;
+    color: #373737;
+    text-align: justify;
+}
+
+.searchDiv {
+    margin-top: 15px;
+}
+
+.not-active {
+    pointer-events: none;
+    cursor: default;
+}
+
+/*Page show resource*/
+
+#geoCoords {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.coordinates {
+    display: none;
+}
+
+.coordinatesPoint {
+    display: inline-block;
+    padding: 0 15px;
+    width: 260px;
+    font-style: italic;
+}
+
+.coordinatesPoint:hover {
+    background: rgba(6, 102, 255, 0.1);
+}
+
+.pointLat, .pointLng {
+    width: 110px;
+    display: inline-block;
+}
+
+
+#datatable td {
+	vertical-align: middle;
+}

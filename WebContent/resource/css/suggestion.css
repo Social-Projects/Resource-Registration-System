@@ -1,0 +1,33 @@
+.autocomplete-suggestions { border: 1px solid #999; background: #FFF; overflow: auto; display:table;}
+.autocomplete-suggestion { padding: 5px 5px; white-space: nowrap; overflow: hidden; font-size:20px; cursor: pointer;}
+.autocomplete-selected { background: #F0F0F0; }
+.autocomplete-suggestions strong { font-weight: bold; color: #3399FF;}
+
+#infoBox {
+    float: right;
+    margin-top: 10px;
+    padding: 6px 10px;
+    font-size: 13px;
+    letter-spacing: 1px;
+    box-shadow: 1px 1px 4px;
+    color: #2f2f2f;
+    font-variant: small-caps;
+}
+
+#allUkraine {
+    cursor: pointer;
+}
+
+.delPoint {
+    cursor: pointer;
+    font-size: 25px;
+    height: 30px;
+    line-height: 30px;
+    opacity: 0.5;
+}
+
+.delPoint:hover {
+    opacity: 0.7;
+    color: #a20004;
+    text-decoration: none;
+}

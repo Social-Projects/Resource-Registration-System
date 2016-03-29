@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="UNIT TESTS">
+	<listeners>
+		<listener class-name="org.registrator.community.TestListener" />
+	</listeners>
+
+	<!-- 3 ERROR 5 WARNING 7 INFO 9 DEBUG -->
+	<test verbose="9" name="Test">
+		<classes>
+			<class name="org.registrator.community.service.CronServiceTest"/>
+			<class name="org.registrator.community.service.InquiryServiceTest"/>
+			<class name="org.registrator.community.service.LinearParameterServiceTest"/>
+			<class name="org.registrator.community.service.PrintServiceTest"/>
+			<class name="org.registrator.community.service.PrintServiceIntegrationTest"/>
+			<class name="org.registrator.community.service.ResourceDeleteServiceTest"/>
+			<class name="org.registrator.community.service.ResourceDiscreteValueServiceTest"/>
+			<class name="org.registrator.community.service.ResourceLinearValueServiceTest"/>
+			<class name="org.registrator.community.service.ResourceServiceTest"/>
+			<class name="org.registrator.community.service.ResourceTypeServiceTest"/>
+			<class name="org.registrator.community.service.RoleServiceTest"/>
+			<class name="org.registrator.community.service.UserServiceTest"/>
+		</classes>
+	</test>
+</suite>

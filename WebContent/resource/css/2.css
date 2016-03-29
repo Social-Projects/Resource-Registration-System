@@ -1,0 +1,32 @@
+table, td {border: 2px solid #ffffff;}
+td {
+padding: 10px;
+
+}
+  a {
+  
+  display: block;
+ color: white;
+  text-decoration: none;
+  margin-top: 10px;
+  maring-left: 10px;
+  }
+  
+  .layout { width: 100%; padding: 0; }
+   .block {
+  
+   }
+   .block div{
+   display: inline;
+   }
+   .layout {
+   margin-top: 20px;
+   }
+   caption {
+   margin-bottom: 20px;
+  font-weight: bold;
+   }
+   body {
+   background-color: blue;
+   color: white;
+   }
