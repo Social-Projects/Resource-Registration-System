@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="UNIT TESTS">
+    <listeners>
+        <listener class-name="org.registrator.community.TestListener" />
+    </listeners>
+
+    <!-- 3 ERROR 5 WARNING 7 INFO 9 DEBUG -->
+    <test verbose="9" name="IntegrationTest">
+        <classes>
+            <class name="org.registrator.community.service.InquiryServiceIT"/>
+            <class name="org.registrator.community.service.InquiryServiceOldIT"/>
+            <class name="org.registrator.community.service.PrintServiceIT"/>
+            <class name="org.registrator.community.service.ResourceTypeServiceIT"/>
+            <class name="org.registrator.community.service.VerificationTokenServiceIT"/>
+        </classes>
+    </test>
+</suite>

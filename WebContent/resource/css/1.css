@@ -1,0 +1,107 @@
+/* GENERAL STYLES */
+body {
+	font-family: Arial, San-Serif;
+	font-size: 100%;
+	background-color: greenyellow;
+}
+ul {
+	margin: 0;
+	padding: 0;
+}
+ul li {
+	list-style-type: none;
+}
+a {
+	text-decoration: none;
+}
+p {
+	font-size: 13px;
+	line-height: 1.3em;
+}
+
+.container {
+	margin: 0 auto;
+	width: 960px;
+	text-align: center;
+}
+
+/* HEADER */
+.header {
+	padding: 12px 0;
+	background-color: blue;
+	color: yellow;
+}
+.languages {
+	color: white;
+	padding: 10px 10px;
+	
+	border: 1px solid blue;
+}
+.languages a{
+	color: white;
+}
+
+.header h1,
+{
+	color: greenyellow;
+	text-align: center;
+}
+
+
+/* NAVIGATION */
+.page-navigation {
+	background-color: #222;
+	border-color: #101010;
+	min-height: 64px;
+}
+.page-navigation li {
+	float: left;
+	width: 100px;
+}
+.page-navigation a {
+	display: block;
+	color: #9d9d9d;
+	line-height: 4em;
+	font-weight: bold;
+	text-align: center;
+}
+.page-navigation li a:hover {
+	color: yellowgreen;
+	background-color: black;
+}
+
+/* LOGIN FORM */
+.login {
+	padding: 15px 0;
+	float: right;
+}
+.login input[type="text"],
+.login input[type="password"] {
+	padding: 5px;
+	margin-right: 5px;
+	border: 1px solid transparent;
+	border-radius: 5px;
+	outline: none;
+}
+.login input[type="submit"] {
+	padding: 5px 15px;
+	border: 1px solid lightgrey;
+	border-radius: 5px;
+}
+.login input[type="submit"]:hover,
+button:hover {
+	background-color: darkgrey;
+	color: white;
+}
+img {
+	text-align: center;
+}
+/* FOOTER */
+.footer {
+	background-color: yellowgreen;
+	color: white;
+	padding: 20px 0;
+	margin-top: 30px;
+}
+
+

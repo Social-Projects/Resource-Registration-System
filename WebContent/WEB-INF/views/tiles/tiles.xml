@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC
+        "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+        "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+<tiles-definitions>
+  <!-- Base -->
+  <definition name="base" template="/WEB-INF/views/layouts/base.jsp">
+    <put-attribute name="title" value="Registrar" />
+    <put-attribute name="login_footer" type="template"
+      value="/WEB-INF/views/templates/login_footer.jsp" />
+  </definition>
+
+  <!-- Login Page -->
+  <definition name="login" extends="base">
+    <put-attribute name="title" value="Login" />
+    <put-attribute name="login_header" type="template"
+      value="/WEB-INF/views/templates/header.jsp" />
+    <put-attribute name="login_body" type="template"
+      value="/WEB-INF/views/login.jsp" />
+  </definition>
+
+  <!-- Password Recovery Page -->
+  <definition name="forgot_password" extends="base">
+    <put-attribute name="title" value="Forgot Password" />
+    <put-attribute name="login_header" type="template"
+      value="/WEB-INF/views/templates/header.jsp" />
+    <put-attribute name="login_body" type="template"
+      value="/WEB-INF/views/forgotPasswordForm.jsp" />
+  </definition>
+
+  <!-- Password Recovery Page -->
+  <definition name="password_recovery" extends="base">
+    <put-attribute name="login_header" type="template"
+      value="/WEB-INF/views/templates/header.jsp" />
+    <put-attribute name="login_body" type="template"
+      value="/WEB-INF/views/password_recovery.jsp" />
+  </definition>
+
+  <!-- Password Change Page -->
+  <definition name="change_password" extends="homepage">
+    <put-attribute name="title" value="Change Password" />
+    <put-attribute name="body" type="template"
+      value="/WEB-INF/views/change_password.jsp" />
+  </definition>
+
+  <!-- Confirm e-mail Page -->
+  <definition name="confirm_email" extends="base">
+    <put-attribute name="login_header" type="template"
+      value="/WEB-INF/views/templates/header.jsp" />
+    <put-attribute name="login_body" type="template"
+      value="/WEB-INF/views/confirm_email.jsp" />
+  </definition>
+
+  <!-- Register Page -->
+  <definition name="register" extends="base">
+    <put-attribute name="title" value="Register new user" />
+    <put-attribute name="login_header" type="template"
+      value="/WEB-INF/views/templates/header.jsp" />
+    <put-attribute name="login_body" type="template"
+      value="/WEB-INF/views/templates/register.jsp" />
+  </definition>
+  <!--<definition name="register" template="/WEB-INF/views/layouts/registerTiles.jsp"> -->
+  <!--<put-attribute name="title" value="Register new user" /> -->
+  <!--<put-attribute name="header" type="template" value="/WEB-INF/views/templates/header.jsp" 
+    /> -->
+  <!--<put-attribute name="body" type="template" value="/WEB-INF/views/register.jsp" 
+    /> -->
+  <!--</definition> -->
+
+  <definition name="regForComm" extends="homepage">
+    <put-attribute name="body" type="template"
+      value="/WEB-INF/views/templates/register.jsp" />
+  </definition>
+  <!-- FAQ -->
+  <definition name="faq" extends="base">
+    <put-attribute name="login_body" type="template"
+      value="/WEB-INF/views/faq.jsp" />
+    <put-attribute name="login_header" type="template"
+      value="/WEB-INF/views/templates/base_header.jsp" />
+  </definition>
+
+  <!--Contact Administrator -->
+  <definition name="help" extends="base">
+    <put-attribute name="login_body" type="template"
+      value="/WEB-INF/views/help.jsp" />
+    <put-attribute name="login_header" type="template"
+      value="/WEB-INF/views/templates/base_header.jsp" />
+  </definition>
+
+  <definition name="thanks-for-registration" extends="base">
+    <put-attribute name="title" value="Thanks for registration" />
+    <put-attribute name="login_header" type="template"
+      value="/WEB-INF/views/templates/header.jsp" />
+    <put-attribute name="login_body" type="template"
+      value="/WEB-INF/views/thanks-for-registration.jsp" />
+  </definition>
+
+  <!-- Pages for logged users -->
+  <definition name="homepage" template="/WEB-INF/views/layouts/main.jsp">
+    <put-attribute name="title" value="Resources" />
+    <put-attribute name="header" type="template"
+      value="/WEB-INF/views/templates/header.jsp" />
+    <put-attribute name="menuForAdmin" type="template"
+      value="/WEB-INF/views/templates/menuForAdmin.jsp" role="ADMIN" />
+    <put-attribute name="menuForRegistrator" type="template"
+      value="/WEB-INF/views/templates/menuForRegistrator.jsp" role="REGISTRATOR" />
+    <put-attribute name="menuForUser" type="template"
+      value="/WEB-INF/views/templates/menuForUser.jsp" role="USER" />
+    <put-attribute name="menuForCommissioner" type="template"
+      value="/WEB-INF/views/templates/menuForCommissioner.jsp" role="COMMISSIONER" />
+    <put-attribute name="body" type="template"
+      value="/WEB-INF/views/templates/body.jsp" />
+    <put-attribute name="footer" type="template"
+      value="/WEB-INF/views/templates/footer.jsp" />
+  </definition>
+
+  <definition name="RegistratedUsers" extends="homepage">
+    <put-attribute name="body" type="template"
+      value="/WEB-INF/views/templates/RegistratedUsers.jsp" />
+  </definition>
+
+  <definition name="userList" extends="homepage">
+    <put-attribute name="body" type="template"
+      value="/WEB-INF/views/templates/userList.jsp" />
+  </definition>
+
+  <definition name="allResourcesTypes" extends="homepage">
+    <put-attribute name="body" type="template"
+      value="/WEB-INF/views/templates/allResourcesTypes.jsp" />
+  </definition>
+
+  <definition name="addResource" extends="homepage">
+    <put-attribute name="body" type="template"
+      value="/WEB-INF/views/templates/addResource.jsp" />
+  </definition>
+
+  <definition name="showResource" extends="homepage">
+    <put-attribute name="body" type="template"
+      value="/WEB-INF/views/templates/showResource.jsp" />
+  </definition>
+
+  <definition name="editWindow" extends="homepage">
+    <put-attribute name="body" type="template"
+      value="/WEB-INF/views/templates/editWindow.jsp" />
+  </definition>
+
+  <definition name="addResType" extends="homepage">
+    <put-attribute name="body" type="template"
+      value="/WEB-INF/views/templates/addResType.jsp" />
+  </definition>
+
+  <definition name="allTypes" extends="homepage">
+    <put-attribute name="body" type="template"
+      value="/WEB-INF/views/templates/allTypes.jsp" />
+  </definition>
+
+  <definition name="InActiveUsers" extends="homepage">
+    <put-attribute name="body" type="template"
+      value="/WEB-INF/views/templates/InActiveUsers.jsp" />
+  </definition>
+
+  <definition name="inquiryAddOut"
+    template="/WEB-INF/views/templates/inquiryAddOut.jsp">
+  </definition>
+
+  <definition name="listInqUserOut" extends="homepage">
+    <put-attribute name="body" type="template"
+      value="/WEB-INF/views/templates/listInqUserOut.jsp" />
+  </definition>
+
+  <definition name="listInquiryUserInput" extends="homepage">
+    <put-attribute name="body" type="template"
+      value="/WEB-INF/views/templates/listInquiryUserInput.jsp" />
+  </definition>
+
+  <definition name="userDataTable" extends="homepage">
+    <!--<put-attribute name="body" type="template" -->
+    <!--value="/WEB-INF/views/templates/userDataTable.jsp" /> -->
+  </definition>
+
+  <definition name="parameters" template="/WEB-INF/views/searchParameters.jsp">
+  </definition>
+
+  <definition name="resourceSearch" template="/WEB-INF/views/resourceSearch.jsp">
+  </definition>
+
+  <!--Logged in user profile -->
+  <definition name="profile" extends="homepage">
+    <put-attribute name="body" type="template"
+      value="/WEB-INF/views/profile.jsp" />
+  </definition>
+
+  <definition name="resourceValues"
+    template="/WEB-INF/views/templates/resourceValues.jsp">
+  </definition>
+
+  <definition name="searchOnMap" extends="homepage">
+    <put-attribute name="body" type="template"
+      value="/WEB-INF/views/searchOnMap.jsp" />
+  </definition>
+
+  <definition name="adminSettings" extends="homepage">
+    <put-attribute name="body" type="template"
+      value="/WEB-INF/views/templates/adminSettings.jsp" />
+  </definition>
+
+  <definition name="searchTableTemplate" extends="homepage">
+    <put-attribute name="body" type="template"
+      value="/WEB-INF/views/templates/searchTableTemplate.jsp" />
+  </definition>
+
+  <definition name="accessDenied" template="/WEB-INF/views/accessDenied.jsp">
+  </definition>
+
+  <definition name="stress" extends="homepage">
+
+    <put-attribute name="body" type="template"
+      value="/WEB-INF/views/templates/stress.jsp" />
+  </definition>
+
+  <definition name="addNewCommunity" extends="homepage">
+    <put-attribute name="body" type="template"
+      value="/WEB-INF/views/templates/addNewCommunity.jsp" />
+  </definition>
+
+  <definition name="editCommunity" extends="homepage">
+    <put-attribute name="body" type="template"
+      value="/WEB-INF/views/templates/editCommunity.jsp" />
+  </definition>
+
+  <definition name="showAllCommunity" extends="homepage">
+    <put-attribute name="body" type="template"
+      value="/WEB-INF/views/templates/showAllCommunity.jsp" />
+  </definition>
+
+  <definition name="error" extends="homepage">
+    <put-attribute name="body" type="template"
+      value="/WEB-INF/views/templates/error.jsp" />
+  </definition>
+
+</tiles-definitions>

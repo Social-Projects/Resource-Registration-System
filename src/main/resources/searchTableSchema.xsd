@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+targetNamespace="http://www.example.org/searchTableSchema" 
+xmlns:tns="http://www.example.org/searchTableSchema" 
+elementFormDefault="qualified">
+
+<element name="tableSearchSetting">
+	<complexType >
+		<sequence minOccurs="1" maxOccurs="100">
+			<element name="tables" type="tns:Tables"/>
+		</sequence>
+	</complexType>
+</element>
+
+	<complexType name="Tables">
+		<sequence minOccurs="1" maxOccurs="100">
+			<element name="table" type="tns:Table"/>
+		</sequence>
+	</complexType>
+	
+	<complexType name="Table">
+		<sequence>
+			<element name="url" type="string"/>
+			<element name="script" type="string"/>
+			<element name="tableTitle" type="string"/>
+			<sequence minOccurs="1" maxOccurs="20">
+				<element name="column" type="tns:Column"/>
+			</sequence>
+		</sequence>
+		<attribute name="tableName" use="required"/>
+	</complexType>
+
+	<complexType name="Column">
+		<sequence>
+			<element name="type" type="string"/>
+			<element name="title" type="string"/>
+			<element name="data" type="string"/>
+		</sequence>
+	</complexType>
+	
+</schema>

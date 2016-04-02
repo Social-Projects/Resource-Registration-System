@@ -1,0 +1,36 @@
+.toggle-button {
+    margin: 0 5px;
+    padding: 0;
+}
+
+.searchDiv {
+    display: none;
+}
+
+.btn {
+    margin: 0 5px;
+}
+
+#resTypeFilter {
+    margin-bottom: 10px;
+}
+
+#datatable tbody tr {
+    cursor: pointer;
+}
+
+.clickedTr {
+    background-color: rgba( 255, 255, 0, 0.2) !important;
+}
+
+#paginationDiv {
+    text-align: center;
+}
+
+/*#paginationList li {*/
+    /*display: inline-block;*/
+    /*cursor: pointer;*/
+    /*padding: 5px 10px;*/
+/*}*/
+
+

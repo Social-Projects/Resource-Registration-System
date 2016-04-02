@@ -1,0 +1,37 @@
+body {
+  background-color: #e3e3e3;
+}
+
+#register_form label.error {
+  margin-left: 10px;
+  width: auto;
+  display: inline;
+  color: red;
+  font: "Verdana";
+  font-style: italic;
+}
+
+.header {
+  border: 1px solid orange;
+  background-color: orange;
+  height: 25px;
+}
+
+#register_container {
+/*    width: 350px;*/
+    /*line-height: 2em;*/
+    position: absolute;
+    top: 50px;
+    left: 50px;
+    display: inline-block;
+}
+
+#footer {
+	padding-top: 50px;
+    padding-right: 0px;
+    padding-bottom: 50px;
+    padding-left: 0px;
+    /* #bottom: 10px; */
+    align: center;
+    border-top: solid 1px black;
+}

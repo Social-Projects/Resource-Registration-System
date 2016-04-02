@@ -24,8 +24,16 @@ hs_err_pid*
 /.project
 /.checkstyle
 
+.idea/
+*.iml
+
 # ignore doc/notes.txt, but not doc/info/arch.txt
 # doc/*.txt
 
 # ignore all .txt files in the directory doc/
 # doc/**/*.txt
+
+# ignore .doc .pfd .docx
+*.doc
+*.docx
+*.pdf

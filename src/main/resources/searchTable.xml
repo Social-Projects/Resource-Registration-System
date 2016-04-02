@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<tableSearchSetting>
+	<tables>
+		<table tableName="userSearch">
+				<url>getData</url>
+				<script>getData</script>
+				<tableTitle>label.tableTitle.userSearch</tableTitle>
+				<columns>		
+					<column>
+						<type>search</type>
+						<title>label.tableTitle.column1.userSearch</title>
+						<data>firstName</data>
+						<searchOperation>
+							<operationType>equal</operationType>
+						</searchOperation>
+					</column>
+					
+					<column>
+						<type>search</type>
+						<title>label.tableTitle.column2.userSearch</title>
+						<data>lastName</data>
+						<searchOperation>
+							<operationType>equal</operationType>
+						</searchOperation>
+					</column>
+					
+					<column>
+						<type>search</type>
+						<title>label.tableTitle.column3.userSearch</title>
+						<data>middleName</data>
+						<searchOperation>
+							<operationType>equal</operationType>
+						</searchOperation>
+					</column>
+					
+					<column>
+						<type>search</type>
+						<title>label.tableTitle.column4.userSearch</title>
+						<data>email</data>
+						<searchOperation>
+							<operationType>equal</operationType>
+						</searchOperation>
+					</column>
+					
+					<column>
+						<type>search</type>
+						<title>label.tableTitle.column5.userSearch</title>
+						<data>address_city</data>
+						<searchOperation>
+							<operationType>equal</operationType>
+						</searchOperation>
+					</column>
+					
+					<column>
+						<type>button</type>
+						<title>label.tableTitle.column6.userSearch</title>
+						<data>action</data>
+						<buttonId>edit</buttonId>
+					</column>
+				</columns>	
+		</table>
+		
+		<table tableName="registerUser">
+			<url>registerUser</url>
+			<script>goToEditUser</script>
+			<tableTitle>label.tableTitle.registerUser</tableTitle>
+			<columns>
+				<column>
+					<type>search</type>
+					<title>label.tableTitle.column1.registerUser</title>
+					<data>firstName</data>
+				</column>
+				
+				<column>
+					<type>search</type>
+					<title>label.tableTitle.column2.registerUser</title>
+					<data>lastName</data>
+				</column>
+				
+				<column>
+					<type>search</type>
+					<title>label.tableTitle.column3.registerUser</title>
+					<data>login</data>
+				</column>
+				
+				<column>
+					<type>search</type>
+					<title>label.community.name</title>
+					<data>territorialCommunity_name</data>
+				</column>
+    
+                <column>
+                    <type>search</type>
+                    <title>label.user.email</title>
+                    <data>email</data>
+                </column>
+    
+                <column>
+                    <type>label</type>
+                    <title>label.user.role</title>
+                    <data>role_type</data>
+                </column>
+    
+			
+			<!-- <column>
+					<type>search</type>
+					<title>label.tableTitle.column5.registerUser</title>
+					<data>address_street</data>
+					<searchOperation>
+						<operationType>equal</operationType>
+						<operationType>like</operationType>
+					</searchOperation>
+				</column> -->
+				
+<!-- 				<column> -->
+<!-- 					<type>search</type> -->
+<!-- 					<title>label.tableTitle.column6.registerUser</title> -->
+<!-- 					<data>passport_seria</data> -->
+<!-- 					<searchOperation> -->
+<!-- 						<operationType>equal</operationType> -->
+<!-- 						<operationType>like</operationType> -->
+<!-- 					</searchOperation> -->
+<!-- 				</column> -->
+				
+<!-- 				<column> -->
+<!-- 					<type>search</type> -->
+<!-- 					<title>label.tableTitle.column7.registerUser</title> -->
+<!-- 					<data>passport_number</data> -->
+<!-- 					<searchOperation> -->
+<!-- 						<operationType>equal</operationType> -->
+<!-- 						<operationType>like</operationType> -->
+<!-- 					</searchOperation> -->
+<!-- 				</column> -->
+				
+				<column>
+					<type>button</type>
+					<title>label.tableTitle.column8.registerUser</title>
+					<data>action</data>
+					<buttonId>edit</buttonId>
+				</column>
+			</columns>	
+		</table>
+		
+	</tables>
+</tableSearchSetting>
