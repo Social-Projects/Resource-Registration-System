@@ -32,7 +32,7 @@
             </a></li>
           </ul></li>
         <li><a
-          href="<c:url value='/registrator/resource/addresource'/>"><spring:message
+          href="<c:url value='/registrator/resource/new'/>"><spring:message
               code="label.menu.addnewresource" /></a>
       </ul>
     </div>

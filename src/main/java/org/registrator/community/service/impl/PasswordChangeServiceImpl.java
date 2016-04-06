@@ -18,15 +18,12 @@ public class PasswordChangeServiceImpl implements PasswordChangeService {
     private UserRepository userRepository;
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
     private PasswordEncoder  userPasswordEncoder;
 
     @Override
     public boolean changePasswordByOldPassword(String password) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userService.getUserByLogin(auth.getName());
+        User user = userRepository.findUserByLogin(auth.getName());
         if (user != null) {
             user.setPassword(userPasswordEncoder.encode(password));
             userRepository.save(user);

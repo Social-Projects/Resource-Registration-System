@@ -28,7 +28,7 @@
                 style="background-color: #bdbdbd; color: grey; text-align: center">
                 <spring:message code="access.denied.main" />
             </p>
-            <a href="${pageContext.request.contextPath}/home"
+            <a href="${pageContext.request.contextPath}/"
                 class="btn "><spring:message
                     code="access.denied.button" /></a>
         </div>

@@ -13,7 +13,7 @@ $(document).on("click", "#outputInquiry", function() {
 })
 
 $(document).on("click", "#editResource", function() {
-  window.location = baseUrl.toString() + '/registrator/resource/addresource?mode=edit&id=' + $('#resourceIdentifierCopy').val();
+  window.location = location.origin + '/registrator/resource/edit?id=' + $('#resourceIdentifierCopy').val();
 })
 
 $(document).on("click", "#deleteResource", function() {

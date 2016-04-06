@@ -31,9 +31,6 @@ public class PasswordChangeServiceTest {
     private UserRepository userRepository;
 
     @Mock
-    private UserService userService;
-
-    @Mock
     private PasswordEncoder userPasswordEncoder;
 
     private static User user;
@@ -52,11 +49,11 @@ public class PasswordChangeServiceTest {
     @Test
     public void changePasswordByOldPasswordTestInvokesRepositoriesWithCorrectParams() throws Exception {
 
-        when(userService.getUserByLogin(login)).thenReturn(user);
+        when(userRepository.findUserByLogin(login)).thenReturn(user);
 
         passwordChangeService.changePasswordByOldPassword(newPassword);
 
-        verify(userService).getUserByLogin(login);
+        verify(userRepository).findUserByLogin(login);
         verify(userPasswordEncoder).encode(newPassword);
         verify(userRepository).save(user);
 
@@ -66,7 +63,7 @@ public class PasswordChangeServiceTest {
     public void changePasswordByOldPasswordTestDoNothingIfUserNull() throws Exception {
 
         user = null;
-        when(userService.getUserByLogin(login)).thenReturn(user);
+        when(userRepository.findUserByLogin(login)).thenReturn(user);
 
         passwordChangeService.changePasswordByOldPassword(newPassword);
 

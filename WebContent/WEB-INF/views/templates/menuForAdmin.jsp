@@ -44,8 +44,10 @@
 
         <li><a href="#" id="unlockUsers"><spring:message
               code="label.security.unblockall" /></a></li>
-        <li><a href="<c:url value='/administrator/users/search'/>"
-          class="glyphicon glyphicon-search"></a></li>
+              
+<%--         <li><a href="<c:url value='/administrator/users/search'/>" --%>
+<!--           class="glyphicon glyphicon-search"></a></li> -->
+          
       </ul>
     </div>
   </div>

@@ -250,9 +250,9 @@
                  value="/WEB-INF/views/templates/error.jsp"/>
  </definition>
 
- <definition name="noResourceEntity" extends="homepage">
+ <definition name="resourceEntityNotFound" extends="homepage">
   <put-attribute name="body" type="template"
-                 value="/WEB-INF/views/templates/noResourceEntity.jsp"/>
+                 value="/WEB-INF/views/templates/resourceEntityNotFound.jsp"/>
  </definition>
 
 </tiles-definitions>

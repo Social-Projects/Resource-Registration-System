@@ -42,6 +42,7 @@ import org.registrator.community.exceptions.ResourceEntityNotFound;
 import org.registrator.community.service.InquiryService;
 import org.registrator.community.service.ResourceService;
 import org.registrator.community.service.SettingsService;
+import org.registrator.community.service.UserService;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -103,6 +104,9 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Autowired
     private SettingsService settingsService;
+
+    @Autowired
+    private UserService userService;
 
     @Override
     public ResourceDTO createNewResourceDTO() {
@@ -657,10 +661,9 @@ public class ResourceServiceImpl implements ResourceService {
             return false;
         }
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Resource resourceEntity = resourceRepository.findByIdentifier(resourceDTO.getIdentifier());
 
-        User user = userRepository.findUserByLogin(auth.getName());
+        User user = userService.getLoggedUser();
         if (user == null) {
             return false;
         }

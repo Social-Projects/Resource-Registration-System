@@ -11,14 +11,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-//@RequestMapping(value = "/administrator/users/")
 public class PasswordResetController {
 
     @Autowired
     private PasswordResetService passwordResetService;
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @RequestMapping(value = "/get-all-users/batch-password-reset", method = RequestMethod.POST)
+    @RequestMapping(value = "/administrator/users/get-all-users/batch-password-reset", method = RequestMethod.POST)
     public @ResponseBody String resetPasswordForUsers(@RequestBody PasswordResetJson passwordResetJson) {
         String msg = passwordResetService.batchPasswordReset(passwordResetJson);
 
@@ -27,12 +26,8 @@ public class PasswordResetController {
 
     @RequestMapping(value = "/reset_password", method = RequestMethod.GET)
     public @ResponseBody String resetUserPassword() {
-        //String msg = passwordResetService.passwordReset();
+        String msg = passwordResetService.passwordReset();
 
-        //return msg;
-        System.out.println("hello I'm in controller");
-
-        //return "msg.batchops.passwordResetSuccess";
-        return "change_password";
+        return msg;
     }
 }

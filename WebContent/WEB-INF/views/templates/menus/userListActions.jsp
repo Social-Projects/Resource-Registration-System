@@ -32,6 +32,18 @@
  </ul>
  </c:if>
  
+  <c:if test="${statusType eq 'NOTCOMFIRMED'}">
+ <a id="dLabel" role="button" data-toggle="dropdown"
+  class="btn btn-xs btn-primary" data-target="#" href="#"><spring:message
+   code="label.modal.actions" /> <span class="caret"></span> </a>
+ <ul class="dropdown-menu multi-level" role="menu"
+  aria-labelledby="dropdownMenu">
+
+  <li><a href="#" class="notcomfirmrd-user" id = "DELETE">Видалити</a></li>
+  <li><a href="#" class="notcomfirmrd-user" id = "SENDEMAILAGAIN">Надіслати email щераз</a></li>
+ </ul>
+ </c:if>
+ 
  <c:if test="${statusType eq 'BLOCK'}">
      <a id="dLabel" role="button" data-toggle="dropdown"
   class="btn btn-xs btn-primary" data-target="#" href="#"><spring:message
@@ -66,27 +78,6 @@
      </button>
     </div>
    </div>
-  </div>
- </div>
-</div>
-
-<%--AJAX Loader for the dark display--%>
-<div id="dark_bg">
- <div class="windows8">
-  <div class="wBall" id="wBall_1">
-   <div class="wInnerBall"></div>
-  </div>
-  <div class="wBall" id="wBall_2">
-   <div class="wInnerBall"></div>
-  </div>
-  <div class="wBall" id="wBall_3">
-   <div class="wInnerBall"></div>
-  </div>
-  <div class="wBall" id="wBall_4">
-   <div class="wInnerBall"></div>
-  </div>
-  <div class="wBall" id="wBall_5">
-   <div class="wInnerBall"></div>
   </div>
  </div>
 </div>

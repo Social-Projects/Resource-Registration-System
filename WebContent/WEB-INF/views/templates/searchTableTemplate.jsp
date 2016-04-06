@@ -6,8 +6,6 @@
 
 <link rel="stylesheet" type="text/css"
  href="<c:url value='/resource/css/suggestion.css'/>">
-<link rel="stylesheet" type="text/css"
- href="<c:url value='/resource/css/cssload.css'/>">
 <script
  src="<c:url value='/resource/js/lib/jquery.autocomplete.min.js'/>"></script>
 <c:if test="${not empty tableSetting.script}">

@@ -32,6 +32,7 @@ public class MassUserOpsValidator implements Validator {
     private Logger logger;
 
     private List<User> userList = new ArrayList<User>();
+
     public static final String WRONG_INPUT = "msg.batchops.wrongInput",
             IS_ADMIN = "msg.batchops.cantChangeAdmins",
             CANT_CHANGE_SELF = "msg.batchops.cantChangeOwnState",

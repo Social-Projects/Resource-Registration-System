@@ -57,7 +57,7 @@ public interface UserService {
 
     public void resetAllFailAttempts();
 
-    void deleteNotConfirmedUser(User user);
+    public String deleteNotConfirmedUsers(String logins);
 
     /**
      * Checks if user is authenticated in application
@@ -70,4 +70,9 @@ public interface UserService {
     void setUsersRole(RoleTypeJson taskInfo);
 
     void createTomesAndResourceNumbers(List<User> users);
+
+    /**
+     * @return current logged user, if user is not logged in then null is returned
+     */
+    User getLoggedUser();
 }

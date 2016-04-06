@@ -1,11 +1,16 @@
 package org.registrator.community.service;
 
+import org.registrator.community.dto.json.UsersDataNotConfJson;
+
 public interface EmailConfirmService {
 
-	void sendConfirmEmailFirstTime(String userEmail, String baseLink);
+	public void sendConfirmEmailFirstTime(String userEmail, String baseLink);
 
-	Boolean confirmEmail(String token);
+	public Boolean confirmEmail(String token);
 
-    void sendConfirmEmailAgain(String login);
+	public String actionsWithNotConfirmedUsers(UsersDataNotConfJson usersDataNotConfJson);
+	
+	public String sendConfirmEmailAgain(String login);
+
 
 }

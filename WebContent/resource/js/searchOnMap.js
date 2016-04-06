@@ -376,7 +376,7 @@ function searchByParameters(page) {
 
 function createDataTable(json) {
   if (json.length > 0) {
-    var url = baseUrl.toString() + "/registrator/resource/get/";
+    var url = location.origin + "/registrator/resource/get/";
 
     var description = jQuery.i18n.prop('msg.description');
     var type = jQuery.i18n.prop('msg.subclass');

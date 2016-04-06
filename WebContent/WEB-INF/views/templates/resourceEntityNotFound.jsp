@@ -3,7 +3,7 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
 <div class="alert alert-danger">
-  <spring:message code="label.resource.notFound"/> ${resource.ownerLogin}
+  <spring:message code= "label.resource.notFound"/><strong> ${exception.identifier}</strong>
 </div>
 
 

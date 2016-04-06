@@ -25,8 +25,8 @@
           <li><a href="<c:url value='/manualregistration'/>"><spring:message
                 code="label.manualregister" /></a></li>
         </c:if>
-        <li><a
-          href="<c:url value='/administrator/users/search" class="glyphicon glyphicon-search'/>"></a>
+<!--         <li><a -->
+<%--           href="<c:url value='/administrator/users/search" class="glyphicon glyphicon-search'/>"></a> --%>
       </ul>
     </div>
   </div>

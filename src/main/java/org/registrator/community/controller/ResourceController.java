@@ -1,30 +1,49 @@
 package org.registrator.community.controller;
 
 import com.google.gson.Gson;
+
 import org.registrator.community.dto.ParameterSearchResultDTO;
 import org.registrator.community.dto.ResourceDTO;
 import org.registrator.community.dto.UserDTO;
 import org.registrator.community.dto.json.PolygonJson;
 import org.registrator.community.dto.json.ResourceSearchJson;
 import org.registrator.community.dto.json.SearchResultJson;
-import org.registrator.community.entity.*;
-import org.registrator.community.exceptions.BadRequest;
+import org.registrator.community.entity.DiscreteParameter;
+import org.registrator.community.entity.LinearParameter;
+import org.registrator.community.entity.Resource;
+import org.registrator.community.entity.ResourceType;
+import org.registrator.community.entity.User;
 import org.registrator.community.exceptions.ResourceEntityNotFound;
-import org.registrator.community.service.*;
+import org.registrator.community.service.DiscreteParameterService;
+import org.registrator.community.service.LinearParameterService;
+import org.registrator.community.service.ResourceDeleteService;
+import org.registrator.community.service.ResourceService;
+import org.registrator.community.service.ResourceTypeService;
+import org.registrator.community.service.UserService;
 import org.registrator.community.validator.ResourceDTOValidator;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.validation.Valid;
-import java.util.*;
 
 @Controller
 @RequestMapping(value = "/registrator/resource")
@@ -62,37 +81,32 @@ public class ResourceController {
      * @return addResource.jsp
      */
     @PreAuthorize("hasRole('ROLE_REGISTRATOR')")
-    @RequestMapping(value = "/addresource", method = RequestMethod.GET)
-    public String addResourceForm(@RequestParam(value = "mode", defaultValue = "add") String mode,
-                                  @RequestParam(value = "id", defaultValue = "") String identifier,
-                                  Model model) throws BadRequest {
+    @RequestMapping(value = "new", method = RequestMethod.GET)
+    public String addResourceForm(Model model) {
+        ResourceDTO resourceDTO = resourceService.createNewResourceDTO();
 
-
-        ResourceDTO resourceDTO = null;
-        if ("add".equalsIgnoreCase(mode)) {
-                resourceDTO = resourceService.createNewResourceDTO();
-        } else if ("edit".equalsIgnoreCase(mode)) {
-            try {
-                resourceDTO = resourceService.findByIdentifier(identifier);
-            } catch (ResourceEntityNotFound resourceEntityNotFound) {
-                model.addAttribute("identifier", identifier);
-                return "noResourceEntity";
-            }
-                if (!resourceService.userCanEditResource(resourceDTO)) {
-                    model.addAttribute("noEdit", true);
-                    model.addAttribute("identifier", resourceDTO.getIdentifier());
-                    return "redirect:get/{identifier}";
-                }
-        } else {
-                throw new BadRequest();
-        }
-
-        /* load list of resource types on UI form */
         List<ResourceType> listOfResourceType = resourceTypeService.findAll();
-        logger.info(listOfResourceType.size() + " resource types was found");
         model.addAttribute("listOfResourceType", listOfResourceType);
         model.addAttribute("resource", resourceDTO);
-        model.addAttribute("editMode", "edit".equals(mode));
+        model.addAttribute("editMode", false);
+        return "addResource";
+    }
+
+    @PreAuthorize("hasRole('ROLE_REGISTRATOR')")
+    @RequestMapping(value = "edit", method = RequestMethod.GET)
+    public String addResourceForm(@RequestParam(value = "id") String identifier,
+                                  Model model) throws ResourceEntityNotFound {
+        ResourceDTO resourceDTO = resourceService.findByIdentifier(identifier);
+        if (!resourceService.userCanEditResource(resourceDTO)) {
+            model.addAttribute("noEdit", true);
+            model.addAttribute("identifier", resourceDTO.getIdentifier());
+            return "redirect:get/{identifier}";
+        }
+
+        List<ResourceType> listOfResourceType = resourceTypeService.findAll();
+        model.addAttribute("listOfResourceType", listOfResourceType);
+        model.addAttribute("resource", resourceDTO);
+        model.addAttribute("editMode", true);
         return "addResource";
     }
 
@@ -106,12 +120,12 @@ public class ResourceController {
      * @return showResource.jsp (addResource.jsp page if resource not valid)
      */
     @PreAuthorize("hasRole('ROLE_REGISTRATOR')")
-    @RequestMapping(value = "/addresource", method = RequestMethod.POST)
+    @RequestMapping(value = {"/new", "/edit"}, method = RequestMethod.POST)
     public String addResource(@Valid @ModelAttribute("resource") ResourceDTO resourceDTO,
                               BindingResult result,
                               Model model) {
 
-        logger.info("The ownerLogin is " + resourceDTO.getOwnerLogin());
+        logger.debug("The ownerLogin is " + resourceDTO.getOwnerLogin());
 
         validator.validate(resourceDTO, result);
         if (result.hasErrors()) {
@@ -120,13 +134,10 @@ public class ResourceController {
             return "addResource";
         }
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User registrator = userService.getUserByLogin(auth.getName());
-        logger.info("The logged register is" + registrator.getLastName() + " " + registrator.getFirstName());
+        User registrator = userService.getLoggedUser();
 
-        /* save resourceDTO on service layer and inquiry */
         resourceDTO = resourceService.saveResource(resourceDTO, registrator);
-        logger.info("Resource was successfully saved");
+        logger.debug("Resource was successfully saved");
         model.addAttribute("identifier", resourceDTO.getIdentifier());
         return "redirect:get/{identifier}";
 
