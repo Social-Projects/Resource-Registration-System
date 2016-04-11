@@ -1,6 +1,7 @@
 package org.registrator.community.controller.administrator;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -10,17 +11,21 @@ import org.registrator.community.dto.json.CommunityParamJson;
 import org.registrator.community.dto.json.ResourceNumberJson;
 import org.registrator.community.dto.json.RoleTypeJson;
 import org.registrator.community.dto.json.UserStatusJson;
+import org.registrator.community.dto.search.Search;
 import org.registrator.community.dto.search.TableSearchRequestDTO;
 import org.registrator.community.dto.search.TableSearchResponseDTO;
 import org.registrator.community.entity.Role;
 import org.registrator.community.entity.TerritorialCommunity;
 import org.registrator.community.entity.User;
+import org.registrator.community.enumeration.RoleType;
 import org.registrator.community.enumeration.UIMessages;
 import org.registrator.community.enumeration.UserStatus;
 import org.registrator.community.service.CommunityService;
 import org.registrator.community.service.RoleService;
 import org.registrator.community.service.UserService;
 import org.registrator.community.service.search.BaseSearchService;
+import org.registrator.community.service.search.TableColumnSetting;
+import org.registrator.community.service.search.TableSetting;
 import org.registrator.community.validator.MassUserOpsValidator;
 import org.registrator.community.validator.ResourceNumberJSONDTOValidator;
 import org.slf4j.Logger;
@@ -185,6 +190,21 @@ public class UsersController {
     @RequestMapping(value = "formUserList", method = RequestMethod.POST)
     public TableSearchResponseDTO getDataFromDataTable(
             @Valid @RequestBody TableSearchRequestDTO dataTableRequest) {
+        User user = userService.getLoggedUser();
+        if (user.getRole().getType() == RoleType.COMMISSIONER) {
+            TableSetting tableSetting = tableSettingsFactory.getTableSetting(dataTableRequest.getTableName());
+            Integer key = null;
+            for (Map.Entry<Integer, TableColumnSetting> entry : tableSetting.getColumns().entrySet()) {
+                if (entry.getValue().getData().equalsIgnoreCase("territorialCommunity_name")) {
+                    key = entry.getKey();
+                    break;
+                }
+            }
+            if (key != null) {
+                Search search = dataTableRequest.getColumns().get(key).getSearch();
+                search.setValue(user.getTerritorialCommunity().getName());
+            }
+        }
         TableSearchResponseDTO dto = userSearchService.executeSearchRequest(dataTableRequest);
         return dto;
     }
