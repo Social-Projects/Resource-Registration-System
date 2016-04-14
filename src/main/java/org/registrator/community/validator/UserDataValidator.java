@@ -1,5 +1,8 @@
 package org.registrator.community.validator;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.registrator.community.dao.UserRepository;
 import org.registrator.community.dto.PassportDTO;
 import org.registrator.community.dto.UserRegistrationDTO;
@@ -37,26 +40,37 @@ public class UserDataValidator implements Validator {
         if(userRepository.getUserByEmail(registrationForm.getEmail()) != null){
             errors.rejectValue("email", "msg.registration.email.exist");
         }
-        String emptyPassportField = emptyPassportField(registrationForm);
-        if(!emptyPassportField.isEmpty()){
-            errors.rejectValue(emptyPassportField, "msg.registration.passport2fields");
+        List<String> emptyPassportFields = emptyPassportField(registrationForm);
+        for(String field : emptyPassportFields){
+            errors.rejectValue(field, "msg.registration.passport3fields");
         }
     }
 
     /**
-     * If one field of passport is filled the second must be to. 
+     * If one field of passport is filled than two other must be to. 
      * Method check this condition.
      * @param registrationForm registration form
      * @return empty string if passport not filled or field name if one of fields is null
      */
-    private String emptyPassportField(UserRegistrationDTO registrationForm) {
+    private List<String> emptyPassportField(UserRegistrationDTO registrationForm) {
+        List<String> rejectedFields = new ArrayList<String>();
         PassportDTO passport = registrationForm.getPassport();
-        if(passport.getNumber().isEmpty() == passport.getSeria().isEmpty()){
-            return "";
+        //if all passport fields are empty or filled than OK!
+        if (passport.getSeria().isEmpty() == passport.getNumber().isEmpty()) {
+            if (passport.getSeria().isEmpty() == passport.getPublished_by_data().isEmpty()) {
+                return rejectedFields;
+            }
+        }
+        //else get empty fields name
+        if(passport.getSeria().isEmpty()){
+            rejectedFields.add("passport.seria");
         }
         if(passport.getNumber().isEmpty()){
-            return "passport.number";
+            rejectedFields.add("passport.number");
         }
-        return "passport.seria";
+        if(passport.getPublished_by_data().isEmpty()){
+            rejectedFields.add("passport.published_by_data");
+        }
+        return rejectedFields;
     }
 }
