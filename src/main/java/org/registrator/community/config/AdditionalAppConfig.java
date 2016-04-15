@@ -5,6 +5,8 @@ import java.util.Properties;
 
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.exception.VelocityException;
+import org.registrator.community.entity.SmtpParameters;
+import org.registrator.community.service.SettingsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -23,19 +25,24 @@ public class AdditionalAppConfig {
     @Autowired
     private Environment env;
 
+    @Autowired
+    private SettingsService settingsService;
+
     @Bean(name = "mailSender")
     public JavaMailSender mailSender(){
+        SmtpParameters smtpParameters = settingsService.getSmtpParameters();
+
         JavaMailSenderImpl sender = new JavaMailSenderImpl();
         sender.setDefaultEncoding("UTF-8");
-        sender.setHost("smtp.gmail.com");
-        sender.setProtocol("smtps");
-        sender.setPort(465);
-        sender.setUsername("resources.registrator@gmail.com");
-        sender.setPassword("m@!RljNg");
+        sender.setHost(smtpParameters.getHost());
+        sender.setProtocol(smtpParameters.getProtocol().toString().toLowerCase());
+        sender.setPort(smtpParameters.getPort());
+        sender.setUsername(smtpParameters.getUsername());
+        sender.setPassword(smtpParameters.getPassword());
        
         Properties javaMailProperties = new Properties();
         javaMailProperties.setProperty("mail.smtp.auth", "true");
-        javaMailProperties.setProperty("mail.smtp.starttls.enable", "true");
+        javaMailProperties.setProperty("mail.smtp.starttls.enable", smtpParameters.getTlsEnabled()?"true":"false");
         javaMailProperties.setProperty("mail.smtp.socketFactory.fallback", "true");
         sender.setJavaMailProperties(javaMailProperties);
 

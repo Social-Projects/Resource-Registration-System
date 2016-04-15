@@ -21,4 +21,14 @@
     <filter-name>openEntityManagerInViewFilter</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
+
+  <error-page>
+    <error-code>404</error-code>
+    <location>/error/httpResourceNotFound</location>
+  </error-page>
+
+  <error-page>
+    <location>/error/generalError</location>
+  </error-page>
+
 </web-app>

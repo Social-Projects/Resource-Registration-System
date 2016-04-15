@@ -1,5 +1,7 @@
 package org.registrator.community.service;
 
+import org.registrator.community.dto.SettingsDTO;
+import org.registrator.community.entity.SmtpParameters;
 import org.registrator.community.enumeration.RegistrationMethod;
 
 import java.util.TimeZone;
@@ -17,4 +19,8 @@ public interface SettingsService {
     TimeZone getTimeZone();
 
     void setTimeZone(TimeZone timeZone);
+
+    SmtpParameters getSmtpParameters();
+
+    SettingsDTO getAllSettings();
 }

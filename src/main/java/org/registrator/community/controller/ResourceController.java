@@ -1,49 +1,29 @@
 package org.registrator.community.controller;
 
 import com.google.gson.Gson;
-
 import org.registrator.community.dto.ParameterSearchResultDTO;
 import org.registrator.community.dto.ResourceDTO;
 import org.registrator.community.dto.UserDTO;
 import org.registrator.community.dto.json.PolygonJson;
 import org.registrator.community.dto.json.ResourceSearchJson;
 import org.registrator.community.dto.json.SearchResultJson;
-import org.registrator.community.entity.DiscreteParameter;
-import org.registrator.community.entity.LinearParameter;
-import org.registrator.community.entity.Resource;
-import org.registrator.community.entity.ResourceType;
-import org.registrator.community.entity.User;
+import org.registrator.community.entity.*;
 import org.registrator.community.exceptions.ResourceEntityNotFound;
-import org.registrator.community.service.DiscreteParameterService;
-import org.registrator.community.service.LinearParameterService;
-import org.registrator.community.service.ResourceDeleteService;
-import org.registrator.community.service.ResourceService;
-import org.registrator.community.service.ResourceTypeService;
-import org.registrator.community.service.UserService;
+import org.registrator.community.service.*;
+import org.registrator.community.utils.HttpUtils;
 import org.registrator.community.validator.ResourceDTOValidator;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.*;
 
 @Controller
 @RequestMapping(value = "/registrator/resource")
@@ -160,6 +140,20 @@ public class ResourceController {
         resourceDTO.setNoEdit(noEdit);
         model.addAttribute("resource", resourceDTO);
         return "showResource";
+    }
+    
+    /**
+     * Handling ResourceEntityNotFound exception
+     */
+    @ExceptionHandler(ResourceEntityNotFound.class)
+    public ModelAndView handleResourceEntityNotFound(HttpServletRequest request, ResourceEntityNotFound exception) {
+        logger.warn("Request: " + HttpUtils.getFullRequestURL(request)
+                + " raised " + exception.getClass().getName());
+
+        ModelAndView mav = new ModelAndView();
+        mav.addObject("exception", exception);
+        mav.setViewName("resourceEntityNotFound");
+        return mav;
     }
 
     /**
@@ -385,5 +379,7 @@ public class ResourceController {
         logger.info("end deleteResource");
         return "redirect:/registrator/resource/searchOnMap";
     }
+    
+    
 
 }

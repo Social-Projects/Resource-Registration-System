@@ -1,6 +1,5 @@
 package org.registrator.community.dto;
 
-import java.util.Locale;
 import java.util.TimeZone;
 
 /**
@@ -57,6 +56,13 @@ public class TimeZoneDTO {
             return false;
         }
         TimeZoneDTO that = (TimeZoneDTO) obj;
-        return this.id != null && this.id.equals(that.id);
+        return this.id.equals(that.id);
     }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
+    
+    
 }

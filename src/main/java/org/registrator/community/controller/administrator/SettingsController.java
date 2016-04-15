@@ -1,5 +1,6 @@
 package org.registrator.community.controller.administrator;
 
+import org.registrator.community.dto.SettingsDTO;
 import org.registrator.community.enumeration.RegistrationMethod;
 import org.registrator.community.service.SettingsService;
 import org.slf4j.Logger;
@@ -13,7 +14,6 @@ import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 import java.util.TimeZone;
@@ -40,11 +40,7 @@ public class SettingsController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/settings", method = RequestMethod.GET)
     public String showSettings(Model model) {
-        logger.info("begin: show admin settings");
-        model.addAttribute("settings",
-                new SettingsDTO(settingsService.getRegistrationMethod().toString(),
-                    settingsService.getTimeZone().getID()));
-        logger.info("end: admin settings are shown");
+        model.addAttribute("settings", settingsService.getAllSettings());
         return "adminSettings";
     }
 
@@ -76,57 +72,6 @@ public class SettingsController {
         settings.setSuccess(true);
         model.addAttribute("settings", settings);
         return "adminSettings";
-    }
-
-    public static class SettingsDTO {
-        private String registrationMethod;
-        private String timeZone;
-        private boolean success;
-        private boolean error;
-
-        public SettingsDTO() {}
-
-        public SettingsDTO(String registrationMethod, String timeZone) {
-            this.registrationMethod = registrationMethod;
-            this.timeZone = timeZone;
-        }
-
-        public String getRegistrationMethod() {
-            return registrationMethod;
-        }
-
-        public void setRegistrationMethod(String registrationMethod) {
-            this.registrationMethod = registrationMethod;
-        }
-
-        public String getTimeZone() {
-            return timeZone;
-        }
-
-        public void setTimeZone(String timeZone) {
-            this.timeZone = timeZone;
-        }
-
-        @Override
-        public String toString() {
-            return String.format("[registration method: %s; time zone: %s", registrationMethod, timeZone);
-        }
-
-        public void setSuccess(boolean success) {
-            this.success = success;
-        }
-
-        public void setError(boolean error) {
-            this.error = error;
-        }
-
-        public boolean getSuccess() {
-            return success;
-        }
-
-        public boolean getError() {
-            return error;
-        }
     }
 
     private static class TimeZoneValidator implements Validator{

@@ -135,7 +135,7 @@ public class ResourceServiceImpl implements ResourceService {
          /* form the resource entity and save in into database */
 
         Resource resourceEntity = resourceRepository.findByIdentifier(resourceDTO.getIdentifier());
-        boolean isNew = (resourceEntity == null);
+        boolean isNew = resourceEntity == null;
         resourceEntity = parseToResourseEntity(resourceDTO, registrator);
         resourceEntity = resourceRepository.save(resourceEntity);
 
@@ -671,11 +671,10 @@ public class ResourceServiceImpl implements ResourceService {
         Calendar today = Calendar.getInstance(settingsService.getTimeZone());
         Calendar createdAt = resourceEntity.getCreatedAt();
 
-        boolean sameDate =  ((today != null) && (createdAt != null)
+        boolean sameDate =  (today != null) && (createdAt != null)
                 && (today.get(Calendar.YEAR) == createdAt.get(Calendar.YEAR))
                 && (today.get(Calendar.MONTH) == createdAt.get(Calendar.MONTH))
-                && (today.get(Calendar.DATE) == createdAt.get(Calendar.DATE))
-        );
+                && (today.get(Calendar.DATE) == createdAt.get(Calendar.DATE));
 
         return user.equals(resourceEntity.getRegistrator()) && sameDate;
     }

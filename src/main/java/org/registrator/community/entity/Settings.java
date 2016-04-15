@@ -28,10 +28,14 @@ public class Settings {
     @Convert(converter = Settings.TimeZoneConverter.class)
     private TimeZone timeZone;
 
+    @Embedded
+    private SmtpParameters smtpParameters;
+
     public Settings() {
         id = 1;
         registrationMethod = RegistrationMethod.MANUAL;
         timeZone = TimeZone.getTimeZone("EET");
+        smtpParameters = new SmtpParameters();
     }
 
     public RegistrationMethod getRegistrationMethod() {
@@ -49,6 +53,14 @@ public class Settings {
 
     public void setTimeZone(TimeZone timeZone) {
         this.timeZone = timeZone;
+    }
+
+    public SmtpParameters getSmtpParameters() {
+        return smtpParameters;
+    }
+
+    public void setSmtpParameters(SmtpParameters smtpParameters) {
+        this.smtpParameters = smtpParameters;
     }
 
     @Converter

@@ -28,28 +28,4 @@ public abstract class AbstractRegistratorException extends Exception  {
         super(message, cause);
     }
 
-    protected String getLocalizedMessageKey() {
-        return "";
-    }
-
-    protected Object[] getMessageParameters() {
-        return new Object[0];
-    }
-
-    @Override
-    public String getLocalizedMessage() {
-
-        String messageKey = getLocalizedMessageKey();
-        if ((messageKey == null) || (messageKey.isEmpty())) {
-            return super.getLocalizedMessage();
-        }
-
-        MessageSource messageSource = SpringApplicationContext.getMessageSource();
-        Locale locale = LocaleContextHolder.getLocale();
-        if (messageSource != null) {
-            return messageSource.getMessage(messageKey, getMessageParameters(), locale);
-        } else {
-            return super.getLocalizedMessage();
-        }
-    }
 }

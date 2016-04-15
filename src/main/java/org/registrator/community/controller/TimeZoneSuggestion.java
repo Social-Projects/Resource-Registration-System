@@ -22,6 +22,12 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class TimeZoneSuggestion {
+    
+    public enum Status {
+        OK,
+        ERROR
+    }
+    
     private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(TimeZoneSuggestion.class);
     @Autowired
     private TimeZoneService timeZoneService;
@@ -41,7 +47,7 @@ public class TimeZoneSuggestion {
         HttpStatus httpStatus = HttpStatus.OK;
         if (timeZones.isEmpty()) {
             httpStatus = HttpStatus.NOT_FOUND;
-            data.setStatus("FAIL");
+            data.setStatus(Status.ERROR.toString());
             data.setMessage("Not Found");
         }
 
@@ -52,16 +58,17 @@ public class TimeZoneSuggestion {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public TimeZoneResponse externalApiException(ExternalApiCallException ex) {
         LOGGER.error("External API error, message {}", ex.getMessage(), ex);
-        return new TimeZoneResponse("FAIL", ex.getMessage(), Collections.emptyList());
+        return new TimeZoneResponse(Status.ERROR.toString(), ex.getMessage(), Collections.emptyList());
     }
 
+    @SuppressWarnings("unused")
     private static class TimeZoneResponse {
         private String status;
         private String message;
         private List<TimeZoneDTO> data;
 
         public TimeZoneResponse(List<TimeZoneDTO> data) {
-            this.status = "OK";
+            this.status = Status.OK.toString();
             this.message = "";
             this.data = data;
         }

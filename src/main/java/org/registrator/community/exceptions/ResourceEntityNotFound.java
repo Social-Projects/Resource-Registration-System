@@ -11,16 +11,6 @@ public class ResourceEntityNotFound extends AbstractRegistratorException {
         this.identifier = identifier;
     }
 
-    @Override
-    protected String getLocalizedMessageKey() {
-        return "label.resource.notFound";
-    }
-
-    @Override
-    protected Object[] getMessageParameters() {
-        return new Object[]{identifier};
-    }
-
     public String getIdentifier() {
         return identifier;
     }

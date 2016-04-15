@@ -35,6 +35,7 @@ public class ResourceSearchJson {
         this.page = page;
     }
 
+    @Override
     public String toString() {
         return "=============================================\n"
                 +"discreteParams: " + discreteParameters.toString() + "\n"

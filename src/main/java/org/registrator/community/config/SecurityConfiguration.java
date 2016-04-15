@@ -39,12 +39,30 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http.csrf().disable().formLogin().loginPage("/login").permitAll()
-
-                .failureUrl("/login?error").usernameParameter("login").passwordParameter("password").and().logout()
-                .logoutUrl("/logout").permitAll().logoutSuccessUrl("/login?logout").and().exceptionHandling()
-                .accessDeniedPage("/denied").and().authorizeRequests().and().rememberMe()
-                .rememberMeParameter("_spring_security_remember_me").tokenRepository(persistentTokenRepository())
+        http
+                .csrf().disable()
+                .authorizeRequests()
+                .antMatchers("/resource/**", "/error/**").permitAll()
+                .anyRequest().authenticated()
+                    .and()
+                .formLogin()
+                .loginPage("/login")
+                .permitAll()
+                .failureUrl("/login?error")
+                .usernameParameter("login")
+                .passwordParameter("password")
+                    .and()
+                .logout()
+                .logoutUrl("/logout")
+                .permitAll()
+                .logoutSuccessUrl("/login?logout")
+                    .and()
+                .exceptionHandling()
+                .accessDeniedPage("/denied")
+                    .and()
+                .rememberMe()
+                .rememberMeParameter("_spring_security_remember_me")
+                .tokenRepository(persistentTokenRepository())
                 .tokenValiditySeconds(87400);
 
     }
