@@ -81,13 +81,16 @@ public class UserServiceTest {
 				return null;
 			}
 		});
-		Mockito.when(userRepository.getUserByEmail(Mockito.anyString())).then(new Answer<User>() {
+		Mockito.when(userRepository.getUsersByEmail(Mockito.anyString())).then(new Answer<List<User>>() {
 			@Override
-			public User answer(InvocationOnMock invocation) throws Throwable {
-				for(int i=0;i<fakeUserRepository.size();i++)
-					if(fakeUserRepository.get(i).getEmail()==invocation.getArgumentAt(0, String.class))
-						return fakeUserRepository.get(i);
-				return null;
+			public List<User> answer(InvocationOnMock invocation) throws Throwable {
+				List<User> resultList = new ArrayList<User>();
+			    for(int i=0;i<fakeUserRepository.size();i++){
+					if(fakeUserRepository.get(i).getEmail()==invocation.getArgumentAt(0, String.class)){
+					    resultList.add(fakeUserRepository.get(i));
+					}
+			    }
+				return resultList;
 			}
 		});
 		Mockito.when(userRepository.getUserByLoginAndPassword(Mockito.anyString(), Mockito.anyString())).then(new Answer<User>() {
@@ -561,10 +564,10 @@ public class UserServiceTest {
 	 * @param isPositive is expected test result positive
 	 */
 	@Test(dataProvider="providerGetUserByEmail")
-	public void findUserByEmail(User expected, String login, boolean isPositive) {
-		User actual = userService.findUserByEmail(login);
+	public void findUsersByEmail(List<User> expected, String login, boolean isPositive) {
+		List<User> actual = userService.findUsersByEmail(login);
 		if(isPositive)
-			assertEqualsUsers(actual, expected);
+			assertEqualsUsers(actual.get(0), expected.get(0));
 		else
 			Assert.assertEquals(actual, expected);
 	}
@@ -844,7 +847,7 @@ public class UserServiceTest {
 		user.setPassport(Arrays.asList(new PassportInfo(user, "AA", "00000", "Народом України")));
 		user.setUserId(1);
 
-		return new Object[][] { {user,user.getEmail(), true}, {null, "notmy@gmail.com", false} };
+		return new Object[][] { {Arrays.asList(user),user.getEmail(), true}, {new ArrayList<User>(), "notmy@gmail.com", false} };
     }
 	
 	/**

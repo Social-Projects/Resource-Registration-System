@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
 
 import org.registrator.community.dto.json.ResourceNumberJson;
 
@@ -11,6 +12,7 @@ public class UserDTO extends UserBasicInfoDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    @Pattern(regexp = "^[\\w]{4,30}$",message = "{msg.registration.login}")
     private String login;
     
     private String role;

@@ -3,6 +3,7 @@ package org.registrator.community.service;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -40,6 +41,7 @@ import static org.mockito.Matchers.anyListOf;
 
 
 public class NotConfirmedUsersServiceTest {
+    private static final Logger logger = LoggerFactory.getLogger(NotConfirmedUsersServiceTest.class);
     
     //test data
     private final String LOGIN = "testLogin";
@@ -54,7 +56,7 @@ public class NotConfirmedUsersServiceTest {
     
     
     @InjectMocks
-    NotConfirmedUsersServiceimpl notConfirmedUsersService = spy(new NotConfirmedUsersServiceimpl());
+    private NotConfirmedUsersServiceimpl notConfirmedUsersService = spy(new NotConfirmedUsersServiceimpl());
    
     @Mock
     private UserService userService;
@@ -69,21 +71,12 @@ public class NotConfirmedUsersServiceTest {
     private PassportService passportService;
     
     @Mock
-    private AddressService addressService;
+    private AddressService addressService;   
     
-    private Logger logger;
     
     @BeforeMethod
-    public void init() throws IllegalArgumentException, IllegalAccessException {
+    public void init() {
         MockitoAnnotations.initMocks(this);
-        
-        // inject logger into tested service
-        logger = LoggerFactory.getLogger("");
-        MemberModifier
-            .field(NotConfirmedUsersServiceimpl.class, "logger")
-            .set(notConfirmedUsersService, logger);
-        
-
     }
     
     @BeforeClass
@@ -106,16 +99,15 @@ public class NotConfirmedUsersServiceTest {
         when(verificationTokenService.saveEmailConfirmationToken(anyString(), anyString(), any(Date.class), anyString())).thenReturn(verificationToken);
         notConfirmedUsersService.sendConfirmEmailFirstTime(LOGIN,BASELINK);
         verify(verificationTokenService).saveEmailConfirmationToken(anyString(), anyString(), any(Date.class), anyString());
-        verify(mailService).sendComfirmEMail(anyString(), anyString(), anyString(), anyString());
+        verify(mailService).sendComfirmEMail(anyString(), anyString(), anyString(), anyString(), anyString());
         
     }
     
     @Test
     public void sendConfirmEmailAgain(){
-       
         when(verificationTokenService.findVerificationTokenByLoginAndTokenType(anyString(), eq(TokenType.CONFIRM_EMAIL))).thenReturn(verificationToken);
         notConfirmedUsersService.sendConfirmEmailAgain(userList);
-        verify(mailService, times(2)).sendComfirmEMail(anyString(), anyString(), anyString(), anyString());
+        verify(mailService, times(2)).sendComfirmEMail(anyString(), anyString(), anyString(), anyString(), anyString());
     }
     
     @Test(dependsOnMethods = { "sendConfirmEmailAgain" })
@@ -126,8 +118,6 @@ public class NotConfirmedUsersServiceTest {
         verify(userService).delete(anyListOf(User.class));
         
     }
- 
-    
     
     @Test(dependsOnMethods = { "deleteNotConfirmedUsers" })
     public void actionsWithNotConfirmedUsers(){
@@ -135,7 +125,6 @@ public class NotConfirmedUsersServiceTest {
         String actual = notConfirmedUsersService.actionsWithNotConfirmedUsers(usersDataNotConfJson);
         String expected = "msg.batchops.wrongInput";
         Assert.assertEquals(actual, expected);
-        
         
         usersDataNotConfJson = new UsersDataNotConfJson();
         usersDataNotConfJson.setActions(ActionsWithNotConfUsers.SENDEMAILAGAIN);
@@ -147,7 +136,6 @@ public class NotConfirmedUsersServiceTest {
         expected = "msg.notconfirmedusers.nosuchusersfound";
         Assert.assertEquals(actual, expected);
         
-        
         when(userService.findUsersByLoginList(anyListOf(String.class))).thenReturn(userList);
         actual = notConfirmedUsersService.actionsWithNotConfirmedUsers(usersDataNotConfJson);
         expected = "msg.notconfirmedusers.onlynotconf";
@@ -158,8 +146,6 @@ public class NotConfirmedUsersServiceTest {
         Role role = new Role(RoleType.ADMIN, "");
         loggetUser.setRole(role);
         when(userService.getLoggedUser()).thenReturn(loggetUser);
-        
-        
         
         when(notConfirmedUsersService.sendConfirmEmailAgain(anyListOf(User.class))).thenReturn("");
         notConfirmedUsersService.actionsWithNotConfirmedUsers(usersDataNotConfJson);
@@ -193,8 +179,8 @@ public class NotConfirmedUsersServiceTest {
         when(verificationTokenService.findVerificationTokenByTokenAndTokenType(anyString(), eq(TokenType.CONFIRM_EMAIL))).thenReturn(verificationToken);
         actual = notConfirmedUsersService.confirmEmail(TOKEN);
         Assert.assertEquals(actual, false);
-        
-        when(userService.findUserByEmail(anyString())).thenReturn(user);
+
+        when(userService.findUserByLogin(anyString())).thenReturn(user);
         actual = notConfirmedUsersService.confirmEmail(TOKEN);
         Assert.assertEquals(actual, true);
     }

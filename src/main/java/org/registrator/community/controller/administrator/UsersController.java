@@ -158,7 +158,6 @@ public class UsersController {
      * Controller for get all registrated users
      * 
      */
-
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_COMMISSIONER')")
     @RequestMapping(value = "/get-all-users", method = RequestMethod.GET)
     public String getAllUsers(

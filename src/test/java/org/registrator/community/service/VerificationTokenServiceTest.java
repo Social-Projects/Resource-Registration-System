@@ -28,13 +28,14 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 public class VerificationTokenServiceTest {
+    private Logger logger = LoggerFactory.getLogger(VerificationTokenServiceTest.class);
+    
 	@Mock
 	private VerificationTokenRepository verificationTokenRepository;
 	
 	@InjectMocks
 	private VerificationTokenService verificationTokenService = new VerificationTokenServiceImpl();
 
-	private Logger logger = LoggerFactory.getLogger(verificationTokenService.getClass());
 	private final static int DESIRED_RESOURCES = 10;
 	private final static int PLUS_TIME = VerificationTokenServiceImpl.PASSWORD_TOKEN_EXPIRY_TIME;
 	
@@ -100,7 +101,7 @@ public class VerificationTokenServiceTest {
 			}
 		}).when(verificationTokenRepository).delete(any(VerificationToken.class));
 
-		when(verificationTokenRepository.findTokenByEmail(anyString())).then(new Answer<VerificationToken>() {
+		when(verificationTokenRepository.findTokensByEmail(anyString())).then(new Answer<VerificationToken>() {
 			public VerificationToken answer(InvocationOnMock invo) {
 				String email = invo.getArgumentAt(0, String.class);
 
@@ -132,6 +133,25 @@ public class VerificationTokenServiceTest {
 
 		return tmp;
 	}
+	
+	@DataProvider(name = "formDataForTokenCreation4")
+    public Object[][] formDataForTokens4() {
+        logger.debug("Generating basic input data for VerificationToken formation");
+        Object[][] tmp = new Object[DESIRED_RESOURCES][];
+        Date now = new Date();
+        Random rand = new Random();
+
+        String fakeRandomUUID = verificationTokenService.createHashForPasswordToken() + rand.nextInt(1000);
+        String email = "someMailAddress#%03d@mail.me";
+        String login = "login%d";
+
+        for (int i = 0; i < tmp.length; i++) {
+            tmp[i] = new Object[] { fakeRandomUUID, String.format(email, rand.nextInt(100)), String.format(login, i), now };
+        }
+
+        return tmp;
+    }
+	
 
 	// Tests
 
@@ -146,23 +166,18 @@ public class VerificationTokenServiceTest {
 		logger.debug("End");
 	}
 
-	@Test(dataProvider = "formDataForTokenCreation", dependsOnMethods = "deleteVerificationToken")
-	public void saveAndDeletePasswordVerificationToken(String uuid, String email, Date date) {
+	@Test(dataProvider = "formDataForTokenCreation4", dependsOnMethods = "deleteVerificationToken")
+	public void saveAndDeletePasswordVerificationToken(String uuid, String email, String login, Date date) {
 		logger.debug("Start");
 
 		Date forSynt = new Date(date.getTime() + PLUS_TIME);
 
-		VerificationToken expected = new VerificationToken(uuid, email, forSynt, TokenType.RECOVER_PASSWORD),
-				actual = verificationTokenService.savePasswordVerificationToken(email, date);
+		VerificationToken expected = new VerificationToken(uuid, login, email, forSynt, TokenType.RECOVER_PASSWORD),
+				actual = verificationTokenService.savePasswordVerificationToken(email, login, date);
 
 		Assert.assertEquals(expected.getUserEmail(), actual.getUserEmail());
 		Assert.assertEquals(expected.getExpiryDate(), actual.getExpiryDate());
-
-		VerificationToken extraCheck = verificationTokenRepository.findTokenByEmail(actual.getUserEmail());
-		Assert.assertNotNull(extraCheck);
-
-		boolean isDeleted = verificationTokenService.deletePasswordVerificationTokenByEmail(extraCheck.getUserEmail());
-		Assert.assertEquals(isDeleted, true);
+		
 		logger.debug("End");
 	}
 

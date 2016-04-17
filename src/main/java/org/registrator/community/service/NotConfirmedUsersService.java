@@ -7,15 +7,14 @@ import org.registrator.community.entity.User;
 
 public interface NotConfirmedUsersService {
 
-	public void sendConfirmEmailFirstTime(String userEmail, String baseLink);
-
-	public Boolean confirmEmail(String token);
-
-	public String actionsWithNotConfirmedUsers(UsersDataNotConfJson usersDataNotConfJson);
+	void sendConfirmEmailFirstTime(String userEmail, String baseLink);
 	
-	public String sendConfirmEmailAgain(List<User> userList);
-
+	Boolean confirmEmail(String token);
+	
+	String actionsWithNotConfirmedUsers(UsersDataNotConfJson usersDataNotConfJson);
+	
+	String sendConfirmEmailAgain(List<User> userList);
+	
     String deleteNotConfirmedUsers(List<User> userList);
-
 
 }

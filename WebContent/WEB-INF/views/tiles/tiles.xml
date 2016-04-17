@@ -35,6 +35,14 @@
   <put-attribute name="login_body" type="template"
    value="/WEB-INF/views/password_recovery.jsp" />
  </definition>
+ 
+  <!-- Finish Registration Page -->
+ <definition name="finish-registration" extends="base">
+  <put-attribute name="login_header" type="template"
+   value="/WEB-INF/views/templates/header.jsp" />
+  <put-attribute name="login_body" type="template"
+   value="/WEB-INF/views/finishRegistration.jsp" />
+ </definition>
 
  <!-- Password Change Page -->
  <definition name="change_password" extends="homepage">

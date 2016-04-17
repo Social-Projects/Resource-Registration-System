@@ -16,7 +16,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 public class UserRegistrationDTO extends UserBasicInfoDTO{
      
     @NotEmpty(message = "{msg.notEmptyField}")
-    @Pattern(regexp = "[a-zA-Z0-9].{5,20}",message = "{msg.registration.login}")
+    @Pattern(regexp = "^[\\w]{4,30}$",message = "{msg.registration.login}")
     private String login;
     
     @Pattern(regexp = "[a-zA-Z0-9].{5,20}",message = "{msg.registration.password}")

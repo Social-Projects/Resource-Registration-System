@@ -51,29 +51,32 @@ public class VerificationToken {
 	}
 	
 	public VerificationToken(String token, String userEmail, Date expiryDate,
+            TokenType tokenType) {
+        this.token = token;
+        this.userEmail = userEmail;
+        this.expiryDate = expiryDate;
+        this.tokenType = tokenType;
+    }
+	
+	public VerificationToken(String token, String login, String userEmail, Date expiryDate,
 			TokenType tokenType) {
 		this.token = token;
+		this.userLogin = login;
 		this.userEmail = userEmail;
 		this.expiryDate = expiryDate;
 		this.tokenType = tokenType;
 	}
-	
-	
 
 	public VerificationToken(String token, String userEmail, Date expiryDate, TokenType tokenType, String baseLink) {
-        super();
         this.token = token;
         this.userEmail = userEmail;
         this.expiryDate = expiryDate;
         this.tokenType = tokenType;
         this.baseLink = baseLink;
     }
-	
-	
 
     public VerificationToken(String token, String userLogin, String userEmail, Date expiryDate, TokenType tokenType,
             String baseLink) {
-        super();
         this.token = token;
         this.userLogin = userLogin;
         this.userEmail = userEmail;
@@ -137,8 +140,5 @@ public class VerificationToken {
     public void setUserLogin(String userLogin) {
         this.userLogin = userLogin;
     }
-	
     
-	
-
 }

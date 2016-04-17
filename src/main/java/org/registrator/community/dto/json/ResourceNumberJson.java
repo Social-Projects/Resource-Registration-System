@@ -1,8 +1,11 @@
 package org.registrator.community.dto.json;
 
-public class ResourceNumberJson {
+import javax.validation.constraints.Pattern;
 
+public class ResourceNumberJson {
+    @Pattern(regexp = "^[\\w]{4,30}$")
     private String login;
+    
     private String resource_number;
     private String registrator_number;
     private String identifier;

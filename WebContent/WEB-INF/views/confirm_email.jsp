@@ -7,7 +7,7 @@
 
 <div class="signin-container">
   <img src="<c:url value='/resource/img/ukraine_logo.gif'/>"
-    class="login_logo col-md-8">
+    class="login_logo col-md-8 col-xs-12">
   <fieldset id="login_fieldset" class="forms col-md-4">
     <c:if test="${msg!= null}">
       <div class="alert alert-success alert-dismissible" role="alert">

@@ -5,15 +5,14 @@ import org.registrator.community.entity.User;
 import org.registrator.community.service.PasswordChangeService;
 import org.registrator.community.service.UserService;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class PasswordChangeServiceImpl implements PasswordChangeService {
-
-    @Autowired
-    private Logger logger;
+    private static final Logger logger = LoggerFactory.getLogger(PasswordChangeServiceImpl.class);
 
     @Autowired
     private UserService userService;
@@ -27,7 +26,7 @@ public class PasswordChangeServiceImpl implements PasswordChangeService {
         if (user != null) {
             user.setPassword(userPasswordEncoder.encode(password));
             userService.updateUser(user);
-            logger.info("Successful password change and update user with login " + user.getLogin());
+            logger.info("Successful password change and update user with login {}", user.getLogin());
             return true;
         }
         logger.warn("Can't perform password change for user");

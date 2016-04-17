@@ -4,6 +4,7 @@ import org.registrator.community.dto.json.UsersDataNotConfJson;
 import org.registrator.community.service.NotConfirmedUsersService;
 import org.registrator.community.service.VerificationTokenService;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -12,18 +13,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class NotConfirmedUsersController {
-
-
-    @Autowired
-    private Logger logger;
+    private static final Logger logger = LoggerFactory.getLogger(NotConfirmedUsersController.class);
+    
     @Autowired
     private VerificationTokenService verificationTokenService;
     @Autowired
-    NotConfirmedUsersService emailConfirmService;
+    private NotConfirmedUsersService emailConfirmService;
 
     @PreAuthorize("hasRole('ROLE_ANONYMOUS') or hasRole('ROLE_ADMIN') or hasRole('ROLE_COMMISSIONER')")
     @RequestMapping(value = {"/manualregistration/confirm_email/{hash}", "/register/confirm_email/{hash}"}, method = RequestMethod.GET)
@@ -38,7 +38,7 @@ public class NotConfirmedUsersController {
     @PreAuthorize("hasRole('ROLE_ADMIN')or hasRole('ROLE_COMMISSIONER')")
     @RequestMapping(value = "/administrator/users/get-all-users/notcomfirmrd-user", method = RequestMethod.POST)
     public @ResponseBody String actionsWithNotConfirmedUsers(@RequestBody UsersDataNotConfJson usersDataNotConfJson) {
-        logger.info("Recieve JSON: "+ usersDataNotConfJson);
+        logger.debug("Received JSON: {}", usersDataNotConfJson);
         return emailConfirmService.actionsWithNotConfirmedUsers(usersDataNotConfJson);
     }
 

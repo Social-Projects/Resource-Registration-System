@@ -9,13 +9,12 @@ public class UsersDataNotConfJson {
     private String logins;
 
     public UsersDataNotConfJson(ActionsWithNotConfUsers actions, String logins) {
-        super();
         this.actions = actions;
         this.logins = logins;
     }
 
     public UsersDataNotConfJson() {
-        super();
+
     }
 
     public ActionsWithNotConfUsers getActions() {

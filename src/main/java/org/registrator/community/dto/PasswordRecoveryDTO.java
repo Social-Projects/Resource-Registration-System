@@ -1,5 +1,7 @@
 package org.registrator.community.dto;
 
+import javax.validation.constraints.Pattern;
+
 public class PasswordRecoveryDTO {
 
     private String password;
@@ -7,6 +9,9 @@ public class PasswordRecoveryDTO {
     private String confirmPassword;
 
     private String hash;
+    
+    @Pattern(regexp = "^[\\w]{4,30}$",message = "{msg.registration.login}")
+    private String login;
 
     public String getPassword() {
         return password;
@@ -31,4 +36,13 @@ public class PasswordRecoveryDTO {
     public void setHash(String hash) {
         this.hash = hash;
     }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
 }

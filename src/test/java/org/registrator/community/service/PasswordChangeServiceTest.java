@@ -23,7 +23,8 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
 public class PasswordChangeServiceTest {
-
+    private static final Logger logger = LoggerFactory.getLogger(PasswordChangeServiceTest.class);
+    
     @InjectMocks
     private PasswordChangeService passwordChangeService = new PasswordChangeServiceImpl();
 
@@ -33,25 +34,17 @@ public class PasswordChangeServiceTest {
     @Mock
     private PasswordEncoder userPasswordEncoder;
 
-    private Logger logger;
     private static User user;
     private static final String login = "login";
     private static final String oldPassword = "oldPassword";
     private static final String newPassword = "password";
 
     @BeforeMethod
-    public void init() throws IllegalAccessException {
-
+    public void init() {
         MockitoAnnotations.initMocks(this);
 
         user = new User(login, oldPassword, new Role(RoleType.USER,"description"), "firstName", "lastName",
                 "middleName", "email", "ACTIVE");
-
-        // inject logger into tested service
-        logger = LoggerFactory.getLogger("");
-        MemberModifier.field(PasswordChangeServiceImpl.class, "logger").set(passwordChangeService, logger);
-
-        //SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(login, oldPassword));
     }
 
     @Test

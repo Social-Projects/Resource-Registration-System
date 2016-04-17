@@ -6,7 +6,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 public class UserStatusJson {
 	@NotEmpty
-	@Pattern(regexp = "^[a-zA-Z,]+$")
+	@Pattern(regexp = "^[\\w]{4,30}$")
     private String login;
 	
     @NotEmpty

@@ -35,19 +35,13 @@ public class PasswordResetServiceTest {
     @Mock
     private PasswordEncoder userPasswordEncoder;
 
-    private Logger logger;
     private PasswordResetJson batch = new PasswordResetJson();
     private String login = "firstLogin";
     private User user;
 
     @BeforeMethod
-    public void init() throws IllegalAccessException{
-
+    public void init() {
         MockitoAnnotations.initMocks(this);
-
-        // inject logger into tested service
-        logger = LoggerFactory.getLogger("");
-        MemberModifier.field(PasswordResetServiceImpl.class, "logger").set(passwordChangeService, logger);
 
         batch.setLogin("firstLogin,secondLogin,thirdLogin"); //TODO check correctness of method in case of multiply users
         user = new User(login, "password", new Role(RoleType.USER,"description"), "firstName", "lastName",

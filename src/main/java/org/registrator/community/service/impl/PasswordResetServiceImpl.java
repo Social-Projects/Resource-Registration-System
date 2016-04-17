@@ -7,6 +7,7 @@ import org.registrator.community.service.MailService;
 import org.registrator.community.service.PasswordResetService;
 import org.registrator.community.service.UserService;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,9 +18,7 @@ import java.util.List;
 
 @Service
 public class PasswordResetServiceImpl implements PasswordResetService{
-
-    @Autowired
-    private Logger logger;
+    private static final Logger logger = LoggerFactory.getLogger(PasswordResetServiceImpl.class);
 
     @Autowired
     private UserService userService;
@@ -40,12 +39,11 @@ public class PasswordResetServiceImpl implements PasswordResetService{
             User user = userService.findUserByLogin(login);
             if (user != null) {
                 userList.add(user);
-                logger.info("found user: {" + user.getUserId() + ":"
-                        + user.getLogin() + "}");
+                logger.info("found user: [ {} : {} ]",user.getUserId(),user.getLogin());
             }
         }
         if (userList.isEmpty()) {
-            logger.warn("There is no user(s) in database with such login(s) " + batch.getLogin());
+            logger.warn("There is no user(s) in database with such login(s) {}", batch.getLogin());
             return "msg.batchops.wrongInput";
         }
 
@@ -55,7 +53,7 @@ public class PasswordResetServiceImpl implements PasswordResetService{
             mailService.sendResetedPasswordMail(user.getEmail(), user.getFirstName(), user.getLogin(), password);
             user.setPassword(userPasswordEncoder.encode(password));
             userService.updateUser(user);
-            logger.info("Successful reset password and update for user with login " + user.getLogin());
+            logger.info("Successful reset password and update for user with login {}", user.getLogin());
         }
         return "msg.batchops.passwordResetSuccess";
     }
@@ -71,7 +69,7 @@ public class PasswordResetServiceImpl implements PasswordResetService{
             mailService.sendResetedPasswordMail(user.getEmail(), user.getFirstName(), user.getLogin(), password);
             user.setPassword(userPasswordEncoder.encode(password));
             userService.updateUser(user);
-            logger.info("Successful reset password and update for user with login " + user.getLogin());
+            logger.info("Successful reset password and update for user with login {}", user.getLogin());
             return "msg.batchops.passwordResetSuccess";
         }
         logger.warn("Can't perform password change for user");

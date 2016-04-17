@@ -2,12 +2,16 @@ package org.registrator.community.dto;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.Pattern;
+
 public class UserNameDTO implements Serializable{
 
     private static final long serialVersionUID = 1L;
     private String firstName;
     private String lastName;
     private String middleName;
+    
+    @Pattern(regexp = "^[\\w]{4,30}$",message = "{msg.registration.login}")
     private String login;
         
     public UserNameDTO() {
