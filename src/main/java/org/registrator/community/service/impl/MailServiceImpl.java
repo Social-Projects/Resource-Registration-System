@@ -1,7 +1,9 @@
 package org.registrator.community.service.impl;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.mail.MessagingException;
@@ -51,7 +53,7 @@ public class MailServiceImpl implements MailService{
 	@Override
 	@Async
 	public void sendComfirmEMail(String recepientEmail, String recepientName, String login, String token, String url) {
-	    logger.info("Method sendComfirmEMail run it Thread: {}", Thread.currentThread().getName());
+	    logger.debug("Method asynchronously starts it Thread: {}", Thread.currentThread().getName());
 	    Map<String, Object> templateVariables = new HashMap<>();
 	    templateVariables.put("name", recepientName);
         templateVariables.put("login", login);
@@ -61,15 +63,15 @@ public class MailServiceImpl implements MailService{
         try {
             mailSender.send(preparator);
         } catch (MailException e) {
-            logger.error("Send mail exception to {}", recepientEmail);
+            logger.error("Send mail exception to {}, exception: {}", recepientEmail, e);
         }
-        
+        logger.info("Method asynchronously complete it Thread: {}", Thread.currentThread().getName());
 	}
 
 	@Override
 	@Async
 	public void sendRecoveryPasswordMail(String recepientEmail, String token, String url) {
-	    logger.info("Method sendRecoveryPasswordMail run it Thread: {}", Thread.currentThread().getName());
+	    logger.debug("Method asynchronously starts it Thread: {}", Thread.currentThread().getName());
 	    Map<String, Object> templateVariables = new HashMap<>();
         templateVariables.put("url", url);
         templateVariables.put("token", token);
@@ -77,15 +79,15 @@ public class MailServiceImpl implements MailService{
         try {
             mailSender.send(preparator);
         } catch (MailException e) {
-            logger.error("Send mail exception to {}", recepientEmail);
+            logger.error("Send mail exception to {}, exception: {}", recepientEmail, e);
         }
-
+        logger.info("Method asynchronously complete it Thread: {}", Thread.currentThread().getName());
 	}
 
     @Override
     @Async
     public void sendResetedPasswordMail(String recepientEmail, String recepientName, String login, String password){
-        logger.info("Method sendResetedPasswordMail run it Thread: {}", Thread.currentThread().getName());
+        logger.debug("Method asynchronously starts it Thread: {}", Thread.currentThread().getName());
         Map<String, Object> templateVariables = new HashMap<>();
         templateVariables.put("name", recepientName);
         templateVariables.put("login", login);
@@ -94,9 +96,28 @@ public class MailServiceImpl implements MailService{
         try {
             mailSender.send(preparator);
         } catch (MailException e) {
-            logger.error("Send mail exception to {}, message {}", recepientEmail, Throwables.getRootCause(e));
+            logger.error("Send mail exception to {}, exception: {}", recepientEmail, Throwables.getRootCause(e));
         }
-        
+        logger.info("Method asynchronously complete it Thread: {}", Thread.currentThread().getName());
+    }
+    
+    @Override
+    @Async
+    public void sendBatchResetedPasswordMail(List<Map<String, Object>> listTemplateVariables){
+        logger.debug("Method asynchronously starts it Thread: {}", Thread.currentThread().getName());
+        List<MimeMessagePreparator> preparators = new ArrayList<MimeMessagePreparator>(listTemplateVariables.size());
+        // prepare messages
+        for(Map<String, Object> templateVariables: listTemplateVariables){
+            MimeMessagePreparator preparator = prepareMail((String)templateVariables.get("email"), templateVariables, RESET_PASSWORD_LETTER_PATH, RESET_PASSWORD_SUBJECT);
+            preparators.add(preparator);
+        }
+        // send multiple messages
+        try {
+            mailSender.send(preparators.toArray(new MimeMessagePreparator[preparators.size()]));
+        } catch (MailException e) {
+            logger.error("Send mail exception, message {}", Throwables.getRootCause(e));
+        }
+        logger.info("Method asynchronously complete it Thread: {}", Thread.currentThread().getName());
     }
     
     private MimeMessagePreparator prepareMail(String recepientEmail,Map<String, Object> templateVariables, String templatePath, String subject){

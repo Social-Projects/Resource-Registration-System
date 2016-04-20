@@ -29,7 +29,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
     @Qualifier("authenticationProvider")
-    AuthenticationProvider authenticationProvider;
+    private AuthenticationProvider authenticationProvider;
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {

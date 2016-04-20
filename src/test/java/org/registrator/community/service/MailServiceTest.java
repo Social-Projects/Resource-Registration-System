@@ -1,24 +1,23 @@
 package org.registrator.community.service;
 
 import org.apache.velocity.app.VelocityEngine;
-import org.mockito.Spy;
 import org.powermock.api.mockito.PowerMockito;
-import org.powermock.api.support.membermodification.MemberModifier;
-import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.testng.PowerMockTestCase;
 import org.registrator.community.mailer.ReloadableMailSender;
 import org.registrator.community.service.impl.MailServiceImpl;
-import org.slf4j.Logger;
 
 import static org.mockito.Mockito.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.testng.annotations.Test;
@@ -30,8 +29,15 @@ public class MailServiceTest extends PowerMockTestCase {
     private String recepientEmail = "recepientEmail";
     private String recepientName = "recepientName";
     private String recepientLogin = "recepientLogin";
+    private String recepientPassword = "recepientPassword";
     private String token = "token";
     private String url = "url";
+    private Map<String, Object> batch = new HashMap<String, Object>(){{put("email", recepientEmail);
+            put("email", recepientEmail);
+            put("name", recepientName);
+            put("login", recepientLogin);
+            put("password", recepientPassword);
+        }};
 
     @InjectMocks
     private MailService mailService = new MailServiceImpl();
@@ -63,6 +69,16 @@ public class MailServiceTest extends PowerMockTestCase {
                 .thenReturn(mock(MimeMessageHelper.class, RETURNS_MOCKS));
         mailService.sendResetedPasswordMail(recepientEmail, recepientName, token, url);
         verify(mailSender).send(any(MimeMessagePreparator.class));
+    }
+    
+    @Test
+    public void sendBatchResetedPasswordMailTestInvokesMailSender() throws Exception {
+        PowerMockito.whenNew(MimeMessageHelper.class)
+                .withAnyArguments()
+                .thenReturn(mock(MimeMessageHelper.class, RETURNS_MOCKS));
+        List<Map<String, Object>> batches = Arrays.asList(batch);
+        mailService.sendBatchResetedPasswordMail(batches);
+        verify(mailSender).send(anyListOf(MimeMessagePreparator.class).toArray(new MimeMessagePreparator[batches.size()]));
     }
 
     @Test

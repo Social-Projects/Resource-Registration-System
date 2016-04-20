@@ -14,7 +14,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class PasswordResetServiceImpl implements PasswordResetService{
@@ -32,7 +34,7 @@ public class PasswordResetServiceImpl implements PasswordResetService{
     @Transactional
     @Override
     public String batchPasswordReset(PasswordResetJson batch) {
-        logger.info("Recieved package: " + batch);
+        logger.info("Recieved package: " + batch.getLogin());
         List<User> userList = new ArrayList<User>();
 
         for (String login : batch.getLogin().split(",")) {
@@ -46,15 +48,26 @@ public class PasswordResetServiceImpl implements PasswordResetService{
             logger.warn("There is no user(s) in database with such login(s) {}", batch.getLogin());
             return "msg.batchops.wrongInput";
         }
-
+        // prepare data that would be sent asynchronously 
+        List<Map<String, Object>> listTemplateVariables = new ArrayList<Map<String, Object>>(userList.size());
         String password;
         for (User user : userList) {
             password = RandomStringUtils.randomAlphanumeric(8);
-            mailService.sendResetedPasswordMail(user.getEmail(), user.getFirstName(), user.getLogin(), password);
+            Map<String, Object> templateVariables = new HashMap<>();
+            templateVariables.put("email", user.getEmail());
+            templateVariables.put("name", user.getFirstName());
+            templateVariables.put("login", user.getLogin());
+            templateVariables.put("password", password);
+            listTemplateVariables.add(templateVariables);
+            // change password
             user.setPassword(userPasswordEncoder.encode(password));
             userService.updateUser(user);
             logger.info("Successful reset password and update for user with login {}", user.getLogin());
+            logger.info("Data accepted and prepared in Thread: "+Thread.currentThread().getName());
         }
+        // send mails asynchronously
+        mailService.sendBatchResetedPasswordMail(listTemplateVariables);
+        
         return "msg.batchops.passwordResetSuccess";
     }
 

@@ -20,14 +20,12 @@ public class PasswordResetController {
     @RequestMapping(value = "/administrator/users/get-all-users/batch-password-reset", method = RequestMethod.POST)
     public @ResponseBody String resetPasswordForUsers(@RequestBody PasswordResetJson passwordResetJson) {
         String msg = passwordResetService.batchPasswordReset(passwordResetJson);
-
         return msg;
     }
 
     @RequestMapping(value = "/reset_password", method = RequestMethod.GET)
     public @ResponseBody String resetUserPassword() {
         String msg = passwordResetService.passwordReset();
-
         return msg;
     }
 }
