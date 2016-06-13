@@ -129,8 +129,8 @@ function updatePointOnUI(polygonsFromMap){
 		isPolygonInsideUkraine(polygonsFromMap[i]);
 		infoBoxMessage += calculateAreaPerimeter(polygonsFromMap[i], i).str;
 		
-		putParameter("PERIMETER", calculateAreaPerimeter(polygonsFromMap[i], i).perimeter, polygonsFromMap.length);
-        putParameter("AREA", calculateAreaPerimeter(polygonsFromMap[i], i).area, polygonsFromMap.length);
+		putParameter("PERIMETER", calculateAreaPerimeter(polygonsFromMap[i], i).perimeter, polygonsFromMap.length,i);
+        putParameter("AREA", calculateAreaPerimeter(polygonsFromMap[i], i).area, polygonsFromMap.length,i);
 		
 		var points = polygonsFromMap[i]._latlngs;
 		var polygonPath = [];
@@ -214,6 +214,11 @@ function addPointsToMap(allowEmptyArea) {
       deletePolygons(polygons);
       polygons = drawPolygonsfromUI(newPolygons);
       
+      for(var i = 0; i<polygons.length; i++){
+  		putParameter("PERIMETER", calculateAreaPerimeter(polygons[i], i).perimeter, polygons.length,i);
+        putParameter("AREA", calculateAreaPerimeter(polygons[i], i).area, polygons.length,i);
+      }
+      
       var infoBoxMessage = "";
       polygons.forEach(function(upoly, index){
     	  infoBoxMessage += calculateAreaPerimeter(upoly, index).str;
@@ -224,7 +229,28 @@ function addPointsToMap(allowEmptyArea) {
   }
 }
 
-function putParameter(name, value, length) {
+
+
+function putParameter(name, value, length, inputNumber) {
+	  var param = $("div[data-calculated="+ name + "]");
+
+	  if (param.length > 0) {
+	    var id = param[0].attributes.getNamedItem("data-calculatedId").value;
+	    for (var i = 0; length - param.length  > i; i++) {
+	      addDiscreteValue(id, "", "");
+	    }
+	    if (inputNumber != undefined){
+	    	$("input[name='resourceDiscrete[" + id + "].valueDiscretes[" + inputNumber + "].value']").val(value);
+	    }else{
+	    	$("input[name='resourceDiscrete[" + id + "].valueDiscretes[" + (length - 1) + "].value']").val(value);
+	    }
+	    
+	    
+	  }
+}
+
+//old version
+/*function putParameter(name, value, length) {
 	  var param = $("div[data-calculated="+ name + "]");
 
 	  if (param.length > 0) {
@@ -234,7 +260,7 @@ function putParameter(name, value, length) {
 	    }
 	    $("input[name='resourceDiscrete[" + id + "].valueDiscretes[" + (length - 1) + "].value']").val(value);
 	  }
-}
+}*/
 
 function updateMap(){
 	resType = $("#resourcesTypeSelect").val();

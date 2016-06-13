@@ -38,14 +38,14 @@
       </div>
 
       <!-- show all discrete values of given resource -->
-      <script>
-        <c:forEach
-    items="${newresource.resourceDiscrete[param_i.index].valueDiscretes}" begin="1"
-    var="valueDiscrete">
+      
+        <c:forEach items="${newresource.resourceDiscrete[param_i.index].valueDiscretes}" begin="1" var="valueDiscrete">
+        <script>
         addDiscreteValue("${param_i.index}", "${valueDiscrete.value}",
             "${valueDiscrete.comment}")
+        </script>
         </c:forEach>
-      </script>
+      
       <div>
         <button type="button" id="btnAddDiscreteValue_${param_i.index}"
                 class="btn btn-primary">+
@@ -88,14 +88,14 @@
         </div>
 
         <!-- show all discrete values of given resource -->
-        <script>
-          <c:forEach
-      items="${newresource.resourceDiscrete[param_i.index].valueDiscretes}" begin="1"
-      var="valueDiscrete">
+        
+          <c:forEach items="${newresource.resourceDiscrete[param_i.index].valueDiscretes}" begin="1" var="valueDiscrete">
+          <script>
           addDiscreteValue("${param_i.index}", "${valueDiscrete.value}",
               "${valueDiscrete.comment}")
+          </script>
           </c:forEach>
-        </script>
+        
         <div>
           <button type="button" id="btnAddDiscreteValue_${param_i.index}"
                   class="btn btn-primary">+

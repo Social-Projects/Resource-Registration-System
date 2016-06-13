@@ -99,13 +99,26 @@ $(document).ready(function() {
 
 function getParameters(data) {
   $("#typeParameters").html(data);
-  var calcParams = $('#calculatedParamsList');
-  var calcParamsHtml = calcParams.html();
-  calcParams.html('');
+  var calcParamsHtml = $('#typeParameters');
   $('#calculatedParams').html(calcParamsHtml);
-  if ((calcParamsHtml == undefined) || (!/\S/.test(calcParamsHtml))) {
+   if ((calcParamsHtml == undefined) || (!/\S/.test(calcParamsHtml))) {
     $('#calculatedParamsTab').addClass('hidden');
   } else {
     $('#calculatedParamsTab').removeClass('hidden');
   }
 }
+
+//old version
+/*function getParameters(data) {
+	  $("#typeParameters").html(data);
+	  var calcParams = $('#calculatedParamsList');
+	  var calcParamsHtml = calcParams.html();
+	  calcParams.html('');
+	  $('#calculatedParams').html(calcParamsHtml);
+	  if ((calcParamsHtml == undefined) || (!/\S/.test(calcParamsHtml))) {
+	    $('#calculatedParamsTab').addClass('hidden');
+	  } else {
+	    $('#calculatedParamsTab').removeClass('hidden');
+	  }
+}*/
+
