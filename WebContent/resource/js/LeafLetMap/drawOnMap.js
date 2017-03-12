@@ -7,7 +7,6 @@ function createMap(){
 	L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
 		maxZoom: 25,
 		attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-		id: 'mapbox.streets',
 	}).addTo(map);
 }
 
