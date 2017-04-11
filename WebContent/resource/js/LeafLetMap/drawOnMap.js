@@ -4,12 +4,9 @@
 // create map
 function createMap(){
 	map = L.map('openMap',  {editable: true}).setView(startPoint, 12);
-	L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpandmbXliNDBjZWd2M2x6bDk3c2ZtOTkifQ._QA7i5Mpkd_m30IGElHziw', {
+	L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
 		maxZoom: 25,
-		attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
-			'<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-			'Imagery © <a href="http://mapbox.com">Mapbox</a>',
-		id: 'mapbox.streets'
+		attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
 	}).addTo(map);
 }
 
@@ -22,14 +19,6 @@ function drawPolygons(polygons) {
 		for (i = 0; i < polygons.length; i++) {
 			
 			var polygon = polygons[i];
-			/*Object polygon
-			DT_RowId:"row0"
-			date:"02.01.2016"
-			identifier:"79000-001"
-			points:Array[48]
-			resourceDescription:"Стрийський парк"
-			resourceType:"земельний"*/
-			
 			var points = polygon.points;
 			var polygonPath = [];
 			
