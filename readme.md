@@ -42,6 +42,14 @@ Team members
     Pavlo Antentyk
     Roman Holiuk
     Roman Volykh
+  LV-178 QC:
+  Team:
+    Bohdan Hamulets
+    Angela Dvorkova
+    Nadia Radionenko
+    Orest Ohorodnyk
+    Ulyana Ovchar
+    Yuliya Yanishevska
 
 It is necessary to configure the MySQL server for the correct work with cyrillic characters.
 Please check do You server configuration file (my.ini for Windows or my.cnf for Unix-based system) have the following settings:
